@@ -1,0 +1,2203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>CYQUENT CCWIS — Field Investigation App</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+/* ═══════════════════════════════════════════
+   CYQUENT CCWIS FIELD INVESTIGATION
+   Mobile-first · Offline-capable prototype
+   Caseworker UX: James Carter · CS-2847
+═══════════════════════════════════════════ */
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --navy:#0D1B2A;
+  --blue:#1A56DB;
+  --blue-l:#EBF5FF;
+  --blue-b:#BFDBFE;
+  --teal:#0E7C6A;
+  --green:#057A55;
+  --green-l:#F0FDF4;
+  --green-b:#A7F3D0;
+  --red:#C81E1E;
+  --red-l:#FFF5F5;
+  --red-b:#FED7D7;
+  --amber:#92400E;
+  --amber-l:#FFFBEB;
+  --amber-b:#FDE68A;
+  --purple:#5521B5;
+  --purple-l:#F5F3FF;
+  --purple-b:#DDD6FE;
+  --ink:#0F172A;
+  --ink2:#1E3A5F;
+  --ink3:#475569;
+  --ink4:#94A3B8;
+  --surface:#F8FAFC;
+  --card:#FFFFFF;
+  --border:#E2E8F0;
+  --border2:#CBD5E1;
+  --f:'DM Sans',-apple-system,sans-serif;
+  --mono:'DM Mono',monospace;
+  --r:12px;
+  --r-sm:8px;
+  --shadow:0 1px 3px rgba(15,23,42,.08);
+  --shadow-md:0 4px 12px rgba(15,23,42,.1);
+}
+html{height:100%;background:#1a1a2e}
+body{
+  font-family:var(--f);
+  font-size:14px;
+  line-height:1.5;
+  color:var(--ink);
+  background:#1a1a2e;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+}
+/* PHONE FRAME */
+.phone-frame{
+  width:390px;
+  min-height:844px;
+  background:#000;
+  border-radius:44px;
+  padding:12px;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.08),
+    0 30px 80px rgba(0,0,0,.7),
+    inset 0 1px 0 rgba(255,255,255,.06);
+  position:relative;
+  flex-shrink:0;
+}
+.phone-inner{
+  width:100%;
+  height:100%;
+  min-height:820px;
+  background:var(--surface);
+  border-radius:34px;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  position:relative;
+}
+/* Status bar */
+.status-bar{
+  height:44px;
+  background:var(--navy);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 22px;
+  flex-shrink:0;
+}
+.sb-time{font-size:15px;font-weight:600;color:#fff}
+.sb-icons{display:flex;align-items:center;gap:6px}
+.sb-icons i{font-size:13px;color:#fff}
+.offline-pill{
+  display:flex;align-items:center;gap:4px;
+  background:rgba(146,64,14,.25);border:1px solid rgba(146,64,14,.4);
+  border-radius:20px;padding:2px 8px;
+  font-size:10px;font-weight:700;color:#FCD34D;
+  margin:0 auto;
+}
+/* Top app bar */
+.app-bar{
+  background:var(--navy);
+  padding:10px 16px 12px;
+  flex-shrink:0;
+}
+.ab-row1{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.ab-back{
+  width:32px;height:32px;border-radius:50%;
+  background:rgba(255,255,255,.1);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;border:none;flex-shrink:0;
+}
+.ab-back i{color:#fff;font-size:16px}
+.ab-title{font-size:16px;font-weight:700;color:#fff;flex:1}
+.ab-avatar{
+  width:32px;height:32px;border-radius:50%;
+  background:var(--blue);
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;color:#fff;flex-shrink:0;
+}
+.case-pill{
+  display:flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:10px;padding:8px 12px;
+}
+.cp-badge{
+  width:36px;height:36px;border-radius:8px;
+  background:var(--red-l);border:1.5px solid var(--red-b);
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;color:var(--red);flex-shrink:0;
+}
+.cp-meta{flex:1}
+.cp-name{font-size:13px;font-weight:700;color:#fff;line-height:1.2}
+.cp-sub{font-size:11px;color:rgba(255,255,255,.55)}
+.cp-sla{
+  text-align:right;
+}
+.cp-sla-time{font-size:12px;font-weight:700;color:#FCD34D}
+.cp-sla-label{font-size:10px;color:rgba(255,255,255,.4)}
+
+/* Progress stepper */
+.step-bar{
+  background:var(--navy);
+  padding:0 16px 14px;
+  flex-shrink:0;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.steps-scroll{
+  display:flex;gap:0;overflow-x:auto;scrollbar-width:none;
+}
+.steps-scroll::-webkit-scrollbar{display:none}
+.step{
+  display:flex;flex-direction:column;align-items:center;
+  gap:4px;flex-shrink:0;padding:0 4px;position:relative;
+  cursor:pointer;min-width:56px;
+}
+.step::after{
+  content:'';
+  position:absolute;right:-8px;top:12px;
+  width:16px;height:1px;
+  background:rgba(255,255,255,.15);
+}
+.step:last-child::after{display:none}
+.step-circle{
+  width:26px;height:26px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;transition:all .2s;
+  border:1.5px solid rgba(255,255,255,.15);
+  color:rgba(255,255,255,.4);background:transparent;
+}
+.step.done .step-circle{background:var(--green);border-color:var(--green);color:#fff}
+.step.active .step-circle{background:var(--blue);border-color:var(--blue);color:#fff;box-shadow:0 0 0 3px rgba(26,86,219,.25)}
+.step.active .step-circle i{font-size:11px}
+.step-label{font-size:9px;color:rgba(255,255,255,.35);text-align:center;line-height:1.2;max-width:52px;font-weight:500}
+.step.done .step-label{color:rgba(255,255,255,.6)}
+.step.active .step-label{color:#fff;font-weight:700}
+
+/* Screen container */
+.screen-container{flex:1;overflow:hidden;position:relative}
+.screen{
+  position:absolute;inset:0;overflow-y:auto;
+  padding:14px;
+  scrollbar-width:none;
+  transition:transform .3s cubic-bezier(.4,0,.2,1),opacity .25s;
+}
+.screen::-webkit-scrollbar{display:none}
+.screen.hidden{transform:translateX(100%);opacity:0;pointer-events:none}
+.screen.hidden-left{transform:translateX(-100%);opacity:0;pointer-events:none}
+
+/* Cards */
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  margin-bottom:10px;
+  overflow:hidden;
+  box-shadow:var(--shadow);
+}
+.card-head{
+  padding:10px 14px 8px;
+  border-bottom:1px solid var(--border);
+  background:#FAFBFC;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.card-title{
+  font-size:12px;font-weight:700;color:var(--ink);
+  display:flex;align-items:center;gap:6px;
+  text-transform:uppercase;letter-spacing:.04em;
+}
+.card-title i{font-size:14px;color:var(--blue)}
+.card-body{padding:12px 14px}
+
+/* Form fields */
+.field{margin-bottom:12px}
+.field:last-child{margin-bottom:0}
+.field-label{
+  font-size:11px;font-weight:600;color:var(--ink3);
+  letter-spacing:.03em;text-transform:uppercase;
+  margin-bottom:5px;display:flex;align-items:center;gap:4px;
+}
+.req::after{content:'*';color:var(--red);margin-left:2px}
+.field-input{
+  width:100%;
+  background:var(--surface);
+  border:1.5px solid var(--border);
+  border-radius:var(--r-sm);
+  padding:10px 12px;
+  font-size:14px;font-family:var(--f);
+  color:var(--ink);
+  transition:border-color .15s;
+  -webkit-appearance:none;
+}
+.field-input:focus{outline:none;border-color:var(--blue);background:#fff}
+.field-select{
+  width:100%;
+  background:var(--surface);
+  border:1.5px solid var(--border);
+  border-radius:var(--r-sm);
+  padding:10px 12px;
+  font-size:14px;font-family:var(--f);
+  color:var(--ink);
+  -webkit-appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2394A3B8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 12px center;
+}
+.field-select:focus{outline:none;border-color:var(--blue)}
+.field-textarea{
+  width:100%;min-height:80px;resize:none;
+  background:var(--surface);
+  border:1.5px solid var(--border);
+  border-radius:var(--r-sm);
+  padding:10px 12px;
+  font-size:14px;font-family:var(--f);
+  color:var(--ink);line-height:1.5;
+}
+.field-textarea:focus{outline:none;border-color:var(--blue);background:#fff}
+.field-value-static{
+  background:var(--surface);
+  border:1.5px solid var(--border);
+  border-radius:var(--r-sm);
+  padding:10px 12px;
+  font-size:14px;color:var(--ink);
+}
+
+/* Field grid */
+.fg2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+
+/* Toggle buttons */
+.toggle-group{display:flex;gap:6px;flex-wrap:wrap}
+.toggle-btn{
+  flex:1;min-width:70px;
+  padding:8px 10px;
+  border-radius:var(--r-sm);
+  border:1.5px solid var(--border);
+  background:var(--surface);
+  font-size:12px;font-weight:600;font-family:var(--f);
+  color:var(--ink3);cursor:pointer;
+  text-align:center;transition:all .15s;
+}
+.toggle-btn.sel-yes{background:var(--green-l);border-color:var(--green-b);color:var(--green)}
+.toggle-btn.sel-no{background:var(--red-l);border-color:var(--red-b);color:var(--red)}
+.toggle-btn.sel-unk{background:var(--amber-l);border-color:var(--amber-b);color:var(--amber)}
+.toggle-btn.sel-blue{background:var(--blue-l);border-color:var(--blue-b);color:var(--blue)}
+
+/* Risk factor rows */
+.rf-row{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 12px;border-radius:var(--r-sm);
+  margin-bottom:5px;border:1.5px solid var(--border);
+  background:var(--surface);transition:all .15s;
+}
+.rf-row.pos{background:var(--red-l);border-color:var(--red-b)}
+.rf-row.neg{background:var(--green-l);border-color:var(--green-b)}
+.rf-row.unk{background:var(--amber-l);border-color:var(--amber-b)}
+.rf-text{flex:1;font-size:12px;font-weight:500;color:var(--ink2)}
+.rf-row.pos .rf-text{color:var(--red)}
+.rf-row.neg .rf-text{color:var(--green)}
+.rf-row.unk .rf-text{color:var(--amber)}
+.rf-btns{display:flex;gap:4px}
+.rf-btn{
+  width:28px;height:28px;border-radius:6px;
+  border:1.5px solid var(--border);background:var(--card);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:13px;transition:all .15s;
+}
+.rf-btn:active{transform:scale(.92)}
+.rf-btn.y{background:var(--green);border-color:var(--green);color:#fff}
+.rf-btn.n{background:var(--surface);border-color:var(--border);color:var(--ink4)}
+.rf-btn.u{background:var(--amber);border-color:var(--amber);color:#fff}
+
+/* Score display */
+.score-banner{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 14px;border-radius:var(--r);
+  margin-bottom:10px;
+}
+.score-num{font-size:42px;font-weight:700;line-height:1}
+.score-label{font-size:12px;font-weight:700;margin-bottom:3px}
+.score-desc{font-size:11px;opacity:.75;line-height:1.4}
+.score-bar-wrap{flex:1}
+.score-bar-track{height:6px;border-radius:20px;overflow:hidden;margin-bottom:4px}
+.score-bar-fill{height:100%;border-radius:20px;transition:width 1s ease}
+.score-range{display:flex;justify-content:space-between;font-size:9px;opacity:.6}
+
+/* Photo capture */
+.photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px}
+.photo-slot{
+  aspect-ratio:1;border-radius:var(--r-sm);
+  border:1.5px dashed var(--border2);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:4px;cursor:pointer;background:var(--surface);
+  transition:all .15s;
+}
+.photo-slot:hover{border-color:var(--blue);background:var(--blue-l)}
+.photo-slot i{font-size:20px;color:var(--ink4)}
+.photo-slot span{font-size:10px;color:var(--ink4)}
+.photo-taken{
+  aspect-ratio:1;border-radius:var(--r-sm);
+  background:var(--ink2);
+  display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+}
+.photo-taken i{font-size:24px;color:rgba(255,255,255,.3)}
+.photo-tag{
+  position:absolute;bottom:0;left:0;right:0;
+  background:rgba(0,0,0,.6);padding:3px 5px;
+  font-size:9px;color:#fff;text-align:center;
+}
+
+/* Interview card */
+.interview-item{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 12px;background:var(--surface);
+  border:1.5px solid var(--border);border-radius:var(--r-sm);
+  margin-bottom:6px;cursor:pointer;transition:all .15s;
+}
+.interview-item:hover{border-color:var(--blue);background:var(--blue-l)}
+.ii-avatar{
+  width:36px;height:36px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;flex-shrink:0;
+}
+.ii-meta{flex:1}
+.ii-name{font-size:13px;font-weight:600;color:var(--ink)}
+.ii-role{font-size:11px;color:var(--ink3)}
+.ii-status{text-align:right;flex-shrink:0}
+
+/* AI chip */
+.ai-chip{
+  display:inline-flex;align-items:center;gap:5px;
+  background:var(--purple-l);border:1.5px solid var(--purple-b);
+  border-radius:20px;padding:5px 12px;
+  font-size:12px;font-weight:600;color:var(--purple);
+  cursor:pointer;transition:all .15s;width:100%;
+  justify-content:center;margin-top:8px;
+}
+.ai-chip:active{transform:scale(.97)}
+.ai-chip .ai-dot{width:6px;height:6px;border-radius:50%;background:var(--purple);animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.2}}
+
+/* AI result card */
+.ai-result{
+  background:var(--purple-l);
+  border:1.5px solid var(--purple-b);
+  border-radius:var(--r);padding:12px 14px;
+  margin-top:8px;display:none;
+}
+.ai-result.show{display:block;animation:fadein .3s ease}
+@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.ai-result-head{display:flex;align-items:center;gap:7px;margin-bottom:8px}
+.ai-result-head i{color:var(--purple);font-size:16px}
+.ai-result-title{font-size:12px;font-weight:700;color:var(--purple)}
+.ai-result-body{font-size:12px;color:var(--ink2);line-height:1.6}
+
+/* Location badge */
+.location-badge{
+  display:flex;align-items:center;gap:6px;
+  background:var(--green-l);border:1px solid var(--green-b);
+  border-radius:20px;padding:5px 10px;
+  font-size:11px;font-weight:600;color:var(--green);
+  margin-bottom:10px;
+}
+
+/* Safety decision */
+.decision-card{
+  border-radius:var(--r);padding:14px;
+  margin-bottom:10px;text-align:center;
+}
+.decision-card.safe{background:var(--green-l);border:2px solid var(--green)}
+.decision-card.unsafe{background:var(--red-l);border:2px solid var(--red)}
+.decision-card.pending{background:var(--amber-l);border:2px solid var(--amber-b)}
+.dc-icon{font-size:32px;margin-bottom:6px}
+.dc-title{font-size:16px;font-weight:700;margin-bottom:4px}
+.dc-sub{font-size:12px;opacity:.75}
+
+/* Action buttons */
+.btn-primary{
+  width:100%;background:var(--blue);
+  border:none;border-radius:var(--r);
+  padding:14px;font-size:15px;font-weight:700;
+  color:#fff;cursor:pointer;font-family:var(--f);
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:all .2s;box-shadow:0 2px 8px rgba(26,86,219,.3);
+}
+.btn-primary:active{transform:scale(.97)}
+.btn-secondary{
+  width:100%;background:var(--surface);
+  border:1.5px solid var(--border2);border-radius:var(--r);
+  padding:12px;font-size:14px;font-weight:600;
+  color:var(--ink2);cursor:pointer;font-family:var(--f);
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:all .15s;
+}
+.btn-secondary:active{transform:scale(.97)}
+.btn-danger{
+  width:100%;background:var(--red);
+  border:none;border-radius:var(--r);
+  padding:14px;font-size:15px;font-weight:700;
+  color:#fff;cursor:pointer;font-family:var(--f);
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+
+/* Tag/pill */
+.pill{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600}
+.pill-red{background:var(--red-l);color:var(--red);border:1px solid var(--red-b)}
+.pill-green{background:var(--green-l);color:var(--green);border:1px solid var(--green-b)}
+.pill-amber{background:var(--amber-l);color:var(--amber);border:1px solid var(--amber-b)}
+.pill-blue{background:var(--blue-l);color:var(--blue);border:1px solid var(--blue-b)}
+.pill-purple{background:var(--purple-l);color:var(--purple);border:1px solid var(--purple-b)}
+
+/* Divider */
+.divider{height:1px;background:var(--border);margin:12px 0}
+
+/* Bottom bar */
+.bottom-bar{
+  background:var(--card);
+  border-top:1px solid var(--border);
+  padding:10px 14px;
+  display:flex;gap:8px;
+  flex-shrink:0;
+}
+.sync-status{
+  display:flex;align-items:center;gap:5px;
+  font-size:11px;font-weight:600;
+  padding:8px 12px;border-radius:var(--r-sm);
+  background:var(--amber-l);color:var(--amber);
+  border:1px solid var(--amber-b);flex:1;
+}
+.sync-status.synced{background:var(--green-l);color:var(--green);border-color:var(--green-b)}
+
+/* Screen label overlay for demo */
+.screen-label{
+  position:absolute;top:8px;right:8px;
+  background:rgba(13,27,42,.85);
+  border-radius:6px;padding:3px 8px;
+  font-size:10px;font-weight:700;color:rgba(255,255,255,.6);
+  letter-spacing:.05em;pointer-events:none;z-index:10;
+}
+
+/* Toast */
+.toast{
+  position:absolute;top:16px;left:50%;transform:translateX(-50%);
+  background:var(--ink);color:#fff;
+  padding:8px 16px;border-radius:20px;
+  font-size:12px;font-weight:600;
+  z-index:100;white-space:nowrap;
+  animation:toast-in .3s ease,toast-out .3s ease 1.7s forwards;
+}
+@keyframes toast-in{from{opacity:0;top:0}to{opacity:1;top:16px}}
+@keyframes toast-out{to{opacity:0;top:0}}
+</style>
+</head>
+<body>
+
+<div class="phone-frame">
+<div class="phone-inner" id="app">
+
+  <!-- STATUS BAR -->
+  <div class="status-bar">
+    <span class="sb-time">9:14</span>
+    <div class="offline-pill"><i class="ti ti-wifi-off" style="font-size:10px"></i>Offline · Queued</div>
+    <div class="sb-icons">
+      <i class="ti ti-battery-3"></i>
+    </div>
+  </div>
+
+  <!-- APP BAR -->
+  <div class="app-bar">
+    <div class="ab-row1">
+      <button class="ab-back" onclick="navBack()"><i class="ti ti-arrow-left"></i></button>
+      <div class="ab-title" id="app-title">Field Investigation</div>
+      <div class="ab-avatar">JC</div>
+    </div>
+    <div class="case-pill">
+      <div class="cp-badge">RF</div>
+      <div class="cp-meta">
+        <div class="cp-name">Rivera Family</div>
+        <div class="cp-sub">CS-2847 · Cat A · Physical Abuse</div>
+      </div>
+      <div class="cp-sla">
+        <div class="cp-sla-time">5h 42m</div>
+        <div class="cp-sla-label">SLA left</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP BAR -->
+  <div class="step-bar">
+    <div class="steps-scroll" id="step-bar">
+      <!-- Rendered by JS -->
+    </div>
+  </div>
+
+  <!-- SCREEN CONTAINER -->
+  <div class="screen-container">
+
+    <!-- SCREEN 0: Case Briefing -->
+    <div class="screen" id="screen-0">
+      <div class="screen-label">1 / 8</div>
+
+      <div class="location-badge">
+        <i class="ti ti-map-pin" style="font-size:14px"></i>
+        312 Riverside Dr, Apt 3B · 0.8 mi away
+        <span style="margin-left:auto;font-size:10px;opacity:.7">Geofenced</span>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title"><i class="ti ti-file-alert"></i>Intake Summary</div>
+          <span class="pill pill-red"><i class="ti ti-clock" style="font-size:10px"></i>24hr Response</span>
+        </div>
+        <div class="card-body">
+          <div class="fg2" style="margin-bottom:10px">
+            <div class="field">
+              <div class="field-label">Report #</div>
+              <div class="field-value-static" style="font-size:14px;font-weight:700;color:var(--ink);letter-spacing:.02em">#8821-2024</div>
+            </div>
+            <div class="field">
+              <div class="field-label">Received</div>
+              <div class="field-value-static" style="font-size:13px">Today 2:47 PM</div>
+            </div>
+          </div>
+          <div class="field">
+            <div class="field-label">Allegation</div>
+            <div class="field-value-static" style="background:var(--red-l);border-color:var(--red-b);color:var(--red);font-weight:600">Physical Abuse — Multiple bruises observed</div>
+          </div>
+          <div class="field">
+            <div class="field-label">Reporter</div>
+            <div class="field-value-static">Linda Chen · Neighbor · <span style="color:var(--green);font-weight:600">Confirmed contact</span></div>
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <div class="field-label">Prior Reports</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <span class="pill pill-red">2 prior reports</span>
+              <span class="pill pill-amber">Oct 2024</span>
+              <span class="pill pill-amber">Jun 2024</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title"><i class="ti ti-users"></i>Persons of Interest</div>
+        </div>
+        <div class="card-body" style="padding:8px">
+          <div style="display:flex;align-items:center;gap:10px;padding:8px;border-radius:8px;background:#FFF5F5;margin-bottom:4px">
+            <div style="width:34px;height:34px;border-radius:50%;background:white;border:1.5px solid rgba(200,30,30,.12);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#C81E1E;flex-shrink:0">SR</div>
+            <div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--ink)">Sophia Rivera</div><div style="font-size:11px;color:var(--ink3)">Age 7 · Subject</div></div>
+            <span class="pill pill-red" style="font-size:10px">Physical Abuse</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:8px;border-radius:8px;background:#EBF5FF;margin-bottom:4px">
+            <div style="width:34px;height:34px;border-radius:50%;background:white;border:1.5px solid rgba(26,86,219,.12);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#1A56DB;flex-shrink:0">MR</div>
+            <div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--ink)">Mateo Rivera</div><div style="font-size:11px;color:var(--ink3)">Age 4 · Sibling</div></div>
+            <span class="pill pill-blue" style="font-size:10px">Under-5 Protocol</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:8px;border-radius:8px;background:#F0FDF4;margin-bottom:4px">
+            <div style="width:34px;height:34px;border-radius:50%;background:white;border:1.5px solid rgba(5,122,85,.12);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#057A55;flex-shrink:0">RM</div>
+            <div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--ink)">Rosa Mendez</div><div style="font-size:11px;color:var(--ink3)">Birth Mother · Age 32</div></div>
+            <span class="pill pill-green" style="font-size:10px">Primary Caretaker</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title"><i class="ti ti-shield-exclamation"></i>Worker Safety</div>
+        </div>
+        <div class="card-body">
+          <div style="display:flex;align-items:center;gap:8px;padding:10px;border-radius:8px;background:var(--green-l);border:1.5px solid var(--green-b)">
+            <i class="ti ti-check-circle" style="color:var(--green);font-size:20px;flex-shrink:0"></i>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:var(--green)">No active threats logged</div>
+              <div style="font-size:11px;color:var(--ink3)">No weapons history · LE Notified: Riverside PD</div>
+            </div>
+          </div>
+          <div style="margin-top:8px;font-size:11px;color:var(--ink3)">Check-in protocol: Text supervisor on arrival. Next check-in: 45 min.</div>
+        </div>
+      </div>
+
+      <div class="ai-chip" onclick="showAIBriefing()">
+        <div class="ai-dot"></div>
+        <i class="ti ti-brain" style="font-size:14px"></i>AI Case Briefing — 3 insights
+      </div>
+      <div class="ai-result" id="ai-briefing">
+        <div class="ai-result-head"><i class="ti ti-brain"></i><div class="ai-result-title">AI Pre-Visit Intelligence</div></div>
+        <div class="ai-result-body">
+          <strong>Pattern:</strong> Third report in 5 months — accelerating frequency. Prior reports screened out due to insufficient evidence.<br><br>
+          <strong>Risk flag:</strong> Mateo (4) is under-5. Activate enhanced protocol — mandatory separate interview and developmental observation.<br><br>
+          <strong>Protective factor:</strong> Maternal aunt Patricia Williams (0.4mi) is licensed kinship provider — kinship placement available if removal required.
+        </div>
+      </div>
+
+      <div style="margin-top:12px;display:flex;gap:8px">
+        <button class="btn-secondary" style="flex:0 0 auto;width:auto;padding:14px 16px" onclick="showToast('Check-in sent to Dr. Patel')"><i class="ti ti-bell"></i></button>
+        <button class="btn-primary" style="flex:1" onclick="goToScreen(1)">
+          <i class="ti ti-navigation"></i>Begin Investigation
+        </button>
+      </div>
+    </div>
+
+    <!-- SCREEN 1: Arrival & Home Visit -->
+    <div class="screen hidden" id="screen-1">
+      <div class="screen-label">2 / 8</div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title"><i class="ti ti-home-2"></i>Arrival — Home Visit</div>
+        </div>
+        <div class="card-body">
+          <div class="fg2">
+            <div class="field">
+              <div class="field-label req">Visit Type</div>
+              <select class="field-select">
+                <option selected>Unannounced</option>
+                <option>Announced</option>
+                <option>Follow-up</option>
+              </select>
+            </div>
+            <div class="field">
+              <div class="field-label req">Arrival Time</div>
+              <input type="time" class="field-input" value="15:22">
+            </div>
+          </div>
+          <div class="fg2">
+            <div class="field">
+              <div class="field-label">Persons Present</div>
+              <select class="field-select">
+                <option>Children only</option>
+                <option>Caretaker present</option>
+                <option selected>Multiple adults</option>
+                <option>No one home</option>
+              </select>
+            </div>
+            <div class="field">
+              <div class="field-label">Entry Granted</div>
+              <div class="toggle-group">
+                <button class="toggle-btn sel-yes" onclick="toggleSel(this,'grp-entry')">Yes</button>
+                <button class="toggle-btn" onclick="toggleSel(this,'grp-entry')">No</button>
+              </div>
+            </div>
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <div class="field-label">GPS Auto-Confirmed</div>
+            <div class="location-badge" style="margin-bottom:0">
+              <i class="ti ti-map-pin" style="font-size:13px"></i>
+              312 Riverside Dr, Apt 3B · Verified 3:22 PM
+              <i class="ti ti-check" style="margin-left:auto;font-size:13px"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title"><i class="ti ti-building"></i>Home Conditions</div>
+        </div>
+        <div class="card-body">
+          <div class="field">
+            <div class="field-label req">Overall Condition</div>
+            <select class="field-select">
+              <option>Safe and appropriate</option>
+              <option selected>Concerns present — documented</option>
+              <option>Unsafe — immediate action</option>
+            </select>
+          </div>
+          <div class="rf-row pos" onclick="cycleRF(this)"><div class="rf-text">Adequate food / nutrition present</div><div style="font-size:12px;font-weight:700;color:var(--green)">✓ Safe</div></div>
+          <div class="rf-row pos" onclick="cycleRF(this)"><div class="rf-text">Adequate sleeping arrangements</div><div style="font-size:12px;font-weight:700;color:var(--green)">✓ Safe</div></div>
+          <div class="rf-row pos" onclick="cycleRF(this)"><div class="rf-text">Utilities functional (heat, water, electric)</div><div style="font-size:12px;font-weight:700;color:var(--green)">✓ Safe</div></div>
+          <div class="rf-row neg" onclick="cycleRF(this)"><div class="rf-text">Home free from hazards</div><div style="font-size:12px;font-weight:700;color:var(--red)">✗ Concern</div></div>
+          <div class="rf-row neg" onclick="cycleRF(this)"><div class="rf-text">Age-appropriate supervision present</div><div style="font-size:12px;font-weight:700;color:var(--red)">✗ Concern</div></div>
+          <div class="field" style="margin-top:10px;margin-bottom:0">
+            <div class="field-label">Home Conditions Notes</div>
+            <textarea class="field-textarea" placeholder="Document specific observations about the home environment...">Mateo found unattended in living room. Rosa arrived at 3:44 PM. Kitchen adequate. Sleeping area appropriate for both children.</textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- PHOTO DOCUMENTATION — FUNCTIONAL -->
+      <div class="card" id="photo-card">
+        <div class="card-head">
+          <div class="card-title"><i class="ti ti-camera"></i>Photo Documentation</div>
+          <span class="pill pill-amber" id="photo-sync-badge">Offline — queued</span>
+        </div>
+        <div class="card-body">
+
+          <!-- Category selector -->
+          <div style="display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin-bottom:10px;padding-bottom:2px" id="photo-categories">
+            <button class="photo-cat-btn active" onclick="setPhotoCategory(this,'Evidence')" style="flex-shrink:0;padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700;border:1.5px solid var(--red);background:var(--red-l);color:var(--red);cursor:pointer;font-family:var(--f)">Evidence</button>
+            <button class="photo-cat-btn" onclick="setPhotoCategory(this,'Home Condition')" style="flex-shrink:0;padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700;border:1.5px solid var(--border);background:var(--surface);color:var(--ink3);cursor:pointer;font-family:var(--f)">Home Condition</button>
+            <button class="photo-cat-btn" onclick="setPhotoCategory(this,'Child Observation')" style="flex-shrink:0;padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700;border:1.5px solid var(--border);background:var(--surface);color:var(--ink3);cursor:pointer;font-family:var(--f)">Child Obs.</button>
+            <button class="photo-cat-btn" onclick="setPhotoCategory(this,'Document Scan')" style="flex-shrink:0;padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700;border:1.5px solid var(--border);background:var(--surface);color:var(--ink3);cursor:pointer;font-family:var(--f)">Document Scan</button>
+          </div>
+
+          <!-- Photo grid -->
+          <div class="photo-grid" id="photo-grid">
+            <!-- Photos rendered by JS -->
+          </div>
+
+          <!-- Hidden file input -->
+          <input type="file" id="photo-file-input" accept="image/*" capture="environment" style="display:none" onchange="handlePhotoFile(this)">
+
+          <!-- Metadata strip -->
+          <div id="photo-meta-strip" style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-size:11px;color:var(--ink3)">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+              <span><strong id="photo-count" style="color:var(--ink)">2</strong> photos taken</span>
+              <span style="color:var(--green);font-weight:600"><i class="ti ti-lock" style="font-size:11px"></i> Encrypted</span>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <span style="display:flex;align-items:center;gap:3px"><i class="ti ti-map-pin" style="font-size:10px;color:var(--blue)"></i>GPS logged</span>
+              <span style="display:flex;align-items:center;gap:3px"><i class="ti ti-clock" style="font-size:10px;color:var(--blue)"></i>Timestamp</span>
+              <span style="display:flex;align-items:center;gap:3px"><i class="ti ti-device-mobile" style="font-size:10px;color:var(--blue)"></i>Device ID</span>
+              <span style="display:flex;align-items:center;gap:3px"><i class="ti ti-shield-check" style="font-size:10px;color:var(--green)"></i>Chain of custody</span>
+            </div>
+          </div>
+
+          <!-- Photo viewer modal -->
+          <div id="photo-viewer" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:999;flex-direction:column;align-items:center;justify-content:center">
+            <div style="width:100%;max-width:390px;padding:16px;position:relative">
+              <button onclick="closePhotoViewer()" style="position:absolute;top:0;right:16px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.1);border:none;color:#fff;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center"><i class="ti ti-x"></i></button>
+              <div id="viewer-img-wrap" style="width:100%;aspect-ratio:4/3;border-radius:12px;overflow:hidden;background:#111;display:flex;align-items:center;justify-content:center;margin-bottom:12px">
+                <img id="viewer-img" src="" alt="" style="width:100%;height:100%;object-fit:contain">
+              </div>
+              <div style="background:rgba(255,255,255,.07);border-radius:10px;padding:12px">
+                <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:8px" id="viewer-label">—</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:11px;color:rgba(255,255,255,.6)" id="viewer-meta"></div>
+              </div>
+              <div style="display:flex;gap:8px;margin-top:10px">
+                <button onclick="deleteCurrentPhoto()" style="flex:1;padding:10px;border-radius:8px;background:var(--red-l);border:1.5px solid var(--red-b);color:var(--red);font-size:12px;font-weight:700;cursor:pointer;font-family:var(--f);display:flex;align-items:center;justify-content:center;gap:6px"><i class="ti ti-trash"></i>Delete</button>
+                <button onclick="editPhotoLabel()" style="flex:1;padding:10px;border-radius:8px;background:var(--blue-l);border:1.5px solid var(--blue-b);color:var(--blue);font-size:12px;font-weight:700;cursor:pointer;font-family:var(--f);display:flex;align-items:center;justify-content:center;gap:6px"><i class="ti ti-pencil"></i>Edit Label</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Label edit modal -->
+          <div id="label-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;align-items:flex-end;justify-content:center">
+            <div style="width:100%;max-width:390px;background:var(--card);border-radius:16px 16px 0 0;padding:20px">
+              <div style="font-size:14px;font-weight:700;color:var(--ink);margin-bottom:12px">Edit Photo Label</div>
+              <input type="text" id="label-input" class="field-input" placeholder="Describe what this photo documents..." style="margin-bottom:12px">
+              <div style="display:flex;gap:8px">
+                <button onclick="closeLabelModal()" class="btn-secondary" style="flex:1;padding:10px;font-size:13px">Cancel</button>
+                <button onclick="saveLabelModal()" class="btn-primary" style="flex:1;padding:10px;font-size:13px">Save Label</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <button class="btn-primary" onclick="goToScreen(2)">
+        <i class="ti ti-arrow-right"></i>Physical Assessment
+      </button>
+    </div>
+
+    <!-- SCREEN 2: Physical Observation / Evidence -->
+    <div class="screen hidden" id="screen-2">
+      <div class="screen-label">3 / 8</div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title"><i class="ti ti-stethoscope"></i>Physical Observation — Sophia (7)</div>
+          <span class="pill pill-red">Subject</span>
+        </div>
+        <div class="card-body">
+          <div class="field">
+            <div class="field-label req">Physical Injuries Observed</div>
+            <div class="toggle-group">
+              <button class="toggle-btn sel-yes" onclick="toggleSel(this,'grp-inj')">Yes</button>
+              <button class="toggle-btn" onclick="toggleSel(this,'grp-inj')">No</button>
+              <button class="toggle-btn" onclick="toggleSel(this,'grp-inj')">Unknown</button>
+            </div>
+          </div>
+          <div class="field">
+            <div class="field-label req">Injury Description</div>
+            <textarea class="field-textarea">Bruise approximately 3cm × 2cm on upper left arm. Coloration consistent with 2-4 day old bruise. No other visible injuries. Child alert and communicative.</textarea>
+          </div>
+          <div class="fg2">
+            <div class="field">
+              <div class="field-label req">Injury Location (body)</div>
+              <select class="field-select">
+                <option selected>Upper arm — left</option>
+                <option>Upper arm — right</option>
+                <option>Head / face</option>
+                <option>Torso</option>
+                <option>Legs</option>
+                <option>Multiple locations</option>
+              </select>
+            </div>
+            <div class="field">
+              <div class="field-label">Consistent With</div>
+              <select class="field-select">
+                <option selected>Forcible grip</option>
+                <option>Fall / accident</option>
+                <option>Unknown</option>
+                <option>Multiple patterns</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <div class="field-label">Child's Explanation</div>
+            <textarea class="field-textarea" style="min-height:60px">Sophia said "Daddy grabbed me really hard." Hesitated before answering. Appeared fearful when asked about home.</textarea>
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <div class="field-label">Immediate Medical Needed</div>
+            <div class="toggle-group">
+              <button class="toggle-btn" onclick="toggleSel(this,'grp-med')">Yes — Emergency</button>
+              <button class="toggle-btn sel-no" onclick="toggleSel(this,'grp-med')">No</button>
+              <button class="toggle-btn" onclick="toggleSel(this,'grp-med')">Recommend Exam</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title"><i class="ti ti-stethoscope"></i>Physical Observation — Mateo (4)</div>
+          <span class="pill pill-blue">Sibling</span>
+        </div>
+        <div class="card-body">
+          <div class="field">
+            <div class="field-label">Physical Injuries Observed</div>
+            <div class="toggle-group">
+              <button class="toggle-btn" onclick="toggleSel(this,'grp-inj2')">Yes</button>
+              <button class="toggle-btn sel-no" onclick="toggleSel(this,'grp-inj2')">No</button>
+              <button class="toggle-btn" onclick="toggleSel(this,'grp-inj2')">Unknown</button>
+            </div>
+          </div>
+          <div class="field">
+            <div class="field-label">Developmental Observation (Under-5)</div>
+            <select class="field-select">
+              <option selected>Age-appropriate — no concerns</option>
+              <option>Developmental delays noted</option>
+              <option>Requires specialist assessment</option>
+            </select>
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <div class="field-label">Notes</div>
+            <textarea class="field-textarea" style="min-height:55px">Mateo appeared well-fed and alert. No visible injuries. Was watching TV unattended when I arrived. Appropriate developmental milestones observed.</textarea>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-primary" onclick="goToScreen(3)">
+        <i class="ti ti-arrow-right"></i>Conduct Interviews
+      </button>
+    </div>
+
+    <!-- SCREEN 3: Interviews -->
+    <div class="screen hidden" id="screen-3">
+      <div class="screen-label">4 / 8</div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title"><i class="ti ti-message-circle"></i>Interview Log</div>
+          <button style="font-size:11px;font-weight:700;color:var(--blue);background:var(--blue-l);border:1.5px solid var(--blue-b);border-radius:20px;padding:4px 12px;cursor:pointer;font-family:var(--f);display:flex;align-items:center;gap:4px" onclick="openNewInterviewModal()"><i class="ti ti-plus" style="font-size:11px"></i>Add</button>
+        </div>
+        <div class="card-body" style="padding:8px" id="interview-list">
+          <div class="interview-item" onclick="openInterviewDetail(0)"">
+            <div class="ii-avatar" style="background:#FFF5F5;color:#C81E1E">SR</div>
+            <div class="ii-meta">
+              <div class="ii-name">Sophia Rivera</div>
+              <div class="ii-role">Child · 7 yrs · Riverside Elementary · <span style="font-size:10px;font-weight:700;background:var(--blue-l);color:var(--blue);padding:2px 8px;border-radius:20px;border:1px solid var(--blue-b)">FF</span> School</div>
+            </div>
+            <div class="ii-status">
+              <span class="pill pill-green" style="font-size:10px">Complete</span>
+            </div>
+          </div>
+          <div class="interview-item" onclick="openInterviewDetail(1)">
+            <div class="ii-avatar" style="background:#F0FDF4;color:#057A55">RM</div>
+            <div class="ii-meta">
+              <div class="ii-name">Rosa Mendez</div>
+              <div class="ii-role">Birth Mother · Primary Caretaker · <span style="font-size:10px;font-weight:700;background:var(--blue-l);color:var(--blue);padding:2px 8px;border-radius:20px;border:1px solid var(--blue-b)">FF</span> Home</div>
+            </div>
+            <div class="ii-status">
+              <span class="pill pill-green" style="font-size:10px">Complete</span>
+            </div>
+          </div>
+          <div class="interview-item" onclick="openInterviewDetail(2)">
+            <div class="ii-avatar" style="background:#EBF5FF;color:#1A56DB">MR</div>
+            <div class="ii-meta">
+              <div class="ii-name">Mateo Rivera</div>
+              <div class="ii-role">Child · 4 yrs · Sibling · <span style="font-size:10px;font-weight:700;background:var(--blue-l);color:var(--blue);padding:2px 8px;border-radius:20px;border:1px solid var(--blue-b)">FF</span> Home</div>
+            </div>
+            <div class="ii-status">
+              <span class="pill pill-green" style="font-size:10px">Complete</span>
+            </div>
+          </div>
+          <div class="interview-item" onclick="openInterviewDetail(3)">
+            <div class="ii-avatar" style="background:#FFFBEB;color:#92400E">PP</div>
+            <div class="ii-meta">
+              <div class="ii-name">Ms. Patterson</div>
+              <div class="ii-role">Principal — Riverside Elementary · <span style="font-size:10px;font-weight:700;background:var(--blue-l);color:var(--blue);padding:2px 8px;border-radius:20px;border:1px solid var(--blue-b)">PH</span> Phone</div>
+            </div>
+            <div class="ii-status">
+              <span class="pill pill-green" style="font-size:10px">Complete</span>
+            </div>
+          </div>
+          <div class="interview-item" onclick="openInterviewDetail(4)">
+            <div class="ii-avatar" style="background:#F5F3FF;color:#5521B5">LC</div>
+            <div class="ii-meta">
+              <div class="ii-name">Linda Chen</div>
+              <div class="ii-role">Reporter — Neighbor · <span style="font-size:10px;font-weight:700;background:var(--blue-l);color:var(--blue);padding:2px 8px;border-radius:20px;border:1px solid var(--blue-b)">PH</span> Phone</div>
+            </div>
+            <div class="ii-status">
+              <span class="pill pill-amber" style="font-size:10px">Pending</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title"><i class="ti ti-pencil"></i>Interview Notes — Sophia</div>
+        </div>
+        <div class="card-body">
+          <div class="field">
+            <div class="field-label">Interview Method</div>
+            <select class="field-select">
+              <option selected>FF — Face To Face (Forensic)</option>
+              <option>PH — Telephone Call</option>
+              <option>EM — E-Mail</option>
+            </select>
+          </div>
+          <div class="field">
+            <div class="field-label">Child's Statement (verbatim or close paraphrase)</div>
+            <textarea class="field-textarea">"Daddy grabbed me really hard when I didn't listen." Sophia identified left arm injury as caused by a male adult. Child appeared fearful when asked about returning home. Showed signs of anxiety (hair pulling, avoiding eye contact).</textarea>
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <div class="field-label">Credibility Assessment</div>
+            <select class="field-select">
+              <option selected>Credible — consistent, age-appropriate</option>
+              <option>Partially credible</option>
+              <option>Inconsistent — further evaluation needed</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="ai-chip" onclick="showAIInterview()">
+        <div class="ai-dot"></div>
+        <i class="ti ti-brain" style="font-size:14px"></i>AI Interview Analysis
+      </div>
+      <div class="ai-result" id="ai-interview">
+        <div class="ai-result-head"><i class="ti ti-brain"></i><div class="ai-result-title">AI Statement Analysis</div></div>
+        <div class="ai-result-body">
+          Sophia's statement is <strong>consistent across two interviews</strong> with specific, unprompted detail. Language is developmentally appropriate for age 7. <strong>Fear of return home</strong> is a significant indicator — document explicitly in SDM Section 1. Recommend forensic interview referral at CARE Center.
+        </div>
+      </div>
+
+      <div style="margin-top:12px">
+        <button class="btn-primary" onclick="goToScreen(4)">
+          <i class="ti ti-arrow-right"></i>SDM Safety Assessment
+        </button>
+      </div>
+    </div>
+
+    <!-- SCREEN 4: SDM Assessment -->
+    <div class="screen hidden" id="screen-4">
+      <div class="screen-label">5 / 8</div>
+
+      <div class="score-banner" style="background:var(--red-l);border:2px solid var(--red-b)" id="sdm-banner">
+        <div>
+          <div id="sdm-score" style="font-size:40px;font-weight:700;color:var(--red);line-height:1">8.2<span style="font-size:18px;font-weight:400;opacity:.6"> /10</span></div>
+        </div>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:700;color:var(--red)">HIGH RISK — Escalation Required</div>
+          <div style="font-size:11px;color:var(--ink3);margin-top:2px">SDM Score · AI-calculated · Supervisor notified</div>
+          <div style="height:5px;background:rgba(200,30,30,.15);border-radius:20px;overflow:hidden;margin-top:6px">
+            <div style="width:82%;height:100%;background:var(--red);border-radius:20px"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title"><i class="ti ti-shield-check"></i>SDM Section 1 — Immediate Safety</div>
+          <span class="pill pill-red">3/7 Positive</span>
+        </div>
+        <div class="card-body" style="padding:8px">
+          <div class="rf-row pos" onclick="cycleRF(this)">
+            <div class="rf-text">Child has been seriously harmed or almost harmed</div>
+            <div style="display:flex;align-items:center;gap:6px"><span style="font-size:11px;font-weight:700;color:var(--red);background:rgba(200,30,30,.1);padding:2px 8px;border-radius:20px">0.30</span><div style="font-size:12px;font-weight:700;color:var(--red)">✓ Present</div></div>
+          </div>
+          <div class="rf-row pos" onclick="cycleRF(this)">
+            <div class="rf-text">Child is fearful of returning to caretaker</div>
+            <div style="display:flex;align-items:center;gap:6px"><span style="font-size:11px;font-weight:700;color:var(--red);background:rgba(200,30,30,.1);padding:2px 8px;border-radius:20px">0.25</span><div style="font-size:12px;font-weight:700;color:var(--red)">✓ Present</div></div>
+          </div>
+          <div class="rf-row pos" onclick="cycleRF(this)">
+            <div class="rf-text">Caretaker denies / minimizes abuse</div>
+            <div style="display:flex;align-items:center;gap:6px"><span style="font-size:11px;font-weight:700;color:var(--red);background:rgba(200,30,30,.1);padding:2px 8px;border-radius:20px">0.15</span><div style="font-size:12px;font-weight:700;color:var(--red)">✓ Present</div></div>
+          </div>
+          <div class="rf-row neg" onclick="cycleRF(this)">
+            <div class="rf-text">Child has no one outside household who can protect</div>
+            <div style="display:flex;align-items:center;gap:6px"><div style="font-size:12px;font-weight:700;color:var(--ink4)">—</div></div>
+          </div>
+          <div class="rf-row neg" onclick="cycleRF(this)">
+            <div class="rf-text">Domestic violence is present</div>
+            <div style="display:flex;align-items:center;gap:6px"><div style="font-size:12px;font-weight:700;color:var(--ink4)">—</div></div>
+          </div>
+          <div class="rf-row neg" onclick="cycleRF(this)">
+            <div class="rf-text">Caretaker is mentally incapacitated</div>
+            <div style="display:flex;align-items:center;gap:6px"><div style="font-size:12px;font-weight:700;color:var(--ink4)">—</div></div>
+          </div>
+          <div class="rf-row neg" onclick="cycleRF(this)">
+            <div class="rf-text">Child is physically ill / injured without care</div>
+            <div style="display:flex;align-items:center;gap:6px"><div style="font-size:12px;font-weight:700;color:var(--ink4)">—</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title"><i class="ti ti-chart-bar"></i>SDM Section 2 — Risk Factors</div>
+          <span class="pill pill-red">Score: 31/40</span>
+        </div>
+        <div class="card-body" style="padding:8px">
+          <div class="rf-row pos"><div class="rf-text">Physical evidence confirmed — bruising</div><span style="font-size:12px;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(200,30,30,.08);color:var(--red)">0.30</span></div>
+          <div class="rf-row pos"><div class="rf-text">Prior CPS history × 2 reports</div><span style="font-size:12px;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(200,30,30,.08);color:var(--red)">0.25</span></div>
+          <div class="rf-row pos"><div class="rf-text">Escalating report frequency</div><span style="font-size:12px;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(200,30,30,.08);color:var(--red)">0.15</span></div>
+          <div class="rf-row pos"><div class="rf-text">Child vulnerability — Mateo age 4</div><span style="font-size:12px;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(200,30,30,.08);color:var(--red)">0.12</span></div>
+          <div class="rf-row neg"><div class="rf-text">Protective: Aunt available (kinship)</div><span style="font-size:12px;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(5,122,85,.08);color:var(--green)">-0.10</span></div>
+          <div class="rf-row neg"><div class="rf-text">Protective: Rosa school engagement</div><span style="font-size:12px;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(5,122,85,.08);color:var(--green)">-0.08</span></div>
+        </div>
+      </div>
+
+      <div class="ai-chip" onclick="showAISDM()">
+        <div class="ai-dot"></div>
+        <i class="ti ti-brain" style="font-size:14px"></i>AI Risk Analysis + Recommendation
+      </div>
+      <div class="ai-result" id="ai-sdm">
+        <div class="ai-result-head"><i class="ti ti-brain"></i><div class="ai-result-title">AI SDM Analysis — Confidence 74%</div></div>
+        <div class="ai-result-body">
+          Risk score 8.2/10 — HIGH. Three critical indicators positive in Section 1. <strong>Recommendation: In-home services with enhanced supervision.</strong> Kinship placement with aunt Patricia Williams available as immediate alternative if escalation needed. Consult Dr. Patel before leaving scene.
+        </div>
+      </div>
+
+      <div style="margin-top:12px">
+        <button class="btn-primary" onclick="goToScreen(5)">
+          <i class="ti ti-arrow-right"></i>Safety Decision
+        </button>
+      </div>
+    </div>
+
+    <!-- SCREEN 5: Safety Decision -->
+    <div class="screen hidden" id="screen-5">
+      <div class="screen-label">6 / 8</div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title"><i class="ti ti-gavel"></i>Safety Decision</div>
+        </div>
+        <div class="card-body">
+          <div class="field">
+            <div class="field-label req">Immediate Safety Decision</div>
+            <select class="field-select" id="safety-decision" onchange="updateDecision(this.value)">
+              <option value="">— Select decision —</option>
+              <option value="safe">Safe to remain in home</option>
+              <option value="plan" selected>In-home safety plan required</option>
+              <option value="remove">Emergency removal — imminent danger</option>
+              <option value="voluntary">Voluntary placement</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="decision-card safe" id="decision-display">
+        <div class="dc-icon"><i class="ti ti-home-check" style="color:var(--green)"></i></div>
+        <div class="dc-title" style="color:var(--green)">In-Home Safety Plan</div>
+        <div class="dc-sub" style="color:var(--ink3)">Children remain in home with mandatory safety plan. Enhanced supervision. Aunt as emergency backup.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title"><i class="ti ti-lock"></i>Safety Plan — Created</div>
+        </div>
+        <div class="card-body">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px">
+            <span style="color:var(--ink2);flex:1">Alleged abuser to have no contact with children</span>
+            <span style="color:var(--green);font-weight:600;font-size:11px;margin-left:8px">Complete — Documented</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px">
+            <span style="color:var(--ink2);flex:1">Rosa Mendez to be present at all times</span>
+            <span style="color:var(--green);font-weight:600;font-size:11px;margin-left:8px">Agreed — Signed</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px">
+            <span style="color:var(--ink2);flex:1">Aunt Patricia Williams as emergency contact</span>
+            <span style="color:var(--green);font-weight:600;font-size:11px;margin-left:8px">Confirmed — Available</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px">
+            <span style="color:var(--ink2);flex:1">Weekly home visits by James Carter</span>
+            <span style="color:var(--green);font-weight:600;font-size:11px;margin-left:8px">Scheduled — Nov 21</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px">
+            <span style="color:var(--ink2);flex:1">SDM re-assessment in 14 days</span>
+            <span style="color:var(--green);font-weight:600;font-size:11px;margin-left:8px">Scheduled — Nov 28</span>
+          </div>
+          <div class="field" style="margin-top:10px;margin-bottom:0">
+            <div class="field-label">Supervisor Decision (Required — High Risk)</div>
+            <select class="field-select">
+              <option selected>Pending — Notified Dr. Patel 3:18 PM</option>
+              <option>Approved</option>
+              <option>Override — Remove</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title"><i class="ti ti-circle-check"></i>Disposition</div>
+        </div>
+        <div class="card-body">
+          <div class="field">
+            <div class="field-label req">Investigation Disposition</div>
+            <select class="field-select">
+              <option selected>Substantiated — Physical Abuse</option>
+              <option>Indicated</option>
+              <option>Unfounded</option>
+              <option>Unable to locate</option>
+              <option>Pending</option>
+            </select>
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <div class="field-label req">Basis for Disposition</div>
+            <textarea class="field-textarea">Physical evidence documented (bruising). Child's disclosure consistent and credible. Pattern of prior reports. SDM score 8.2/10 HIGH. Supervisor Dr. Patel notified.</textarea>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-primary" onclick="goToScreen(6)">
+        <i class="ti ti-arrow-right"></i>Documentation
+      </button>
+    </div>
+
+    <!-- SCREEN 6: Field Documentation -->
+    <div class="screen hidden" id="screen-6">
+      <div class="screen-label">7 / 8</div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title"><i class="ti ti-file-text"></i>Field Notes — Auto-Draft</div>
+          <span class="pill pill-purple">AI Generated</span>
+        </div>
+        <div class="card-body">
+          <div class="field">
+            <div class="field-label">Visit Summary (AI-drafted · Edit as needed)</div>
+            <textarea class="field-textarea" style="min-height:160px">On 11/14/2024 at 15:22, I (James Carter) conducted an unannounced home visit at 312 Riverside Dr, Apt 3B in response to Report #8821-2024 alleging physical abuse of Sophia Rivera (7) and Mateo Rivera (4).
+
+Upon arrival, Mateo was found unattended in the living room. Rosa Mendez arrived at 15:44. Physical examination of Sophia revealed a bruise (~3×2cm) on upper left arm consistent with forcible grip. Sophia stated "Daddy grabbed me really hard."
+
+SDM Section 1: 3/7 indicators positive. Risk score: 8.2 HIGH. Safety plan established. Supervisor Dr. Patel notified at 15:18 via mobile.
+
+Decision: Substantiated — Physical Abuse. In-home safety plan required.</textarea>
+          </div>
+          <div class="ai-chip" onclick="showToast('AI enhanced notes — approved')">
+            <div class="ai-dot"></div>
+            <i class="ti ti-brain" style="font-size:14px"></i>AI Enhance &amp; Spell Check
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title"><i class="ti ti-clock"></i>Contact Time Log</div>
+        </div>
+        <div class="card-body">
+          <div class="fg3">
+            <div class="field">
+              <div class="field-label">Arrival</div>
+              <input type="time" class="field-input" value="15:22">
+            </div>
+            <div class="field">
+              <div class="field-label">Departure</div>
+              <input type="time" class="field-input" value="17:15">
+            </div>
+            <div class="field">
+              <div class="field-label">Direct Hrs</div>
+              <div class="field-value-static" style="text-align:center;font-size:16px;font-weight:700;color:var(--blue)">1h 53m</div>
+            </div>
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <div class="field-label">Contact Method</div>
+            <select class="field-select">
+              <option selected>FF — Face To Face</option>
+              <option>PH — Telephone Call</option>
+              <option>EM — E-Mail</option>
+              <option>VM — Voice Mail</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title"><i class="ti ti-signature"></i>Signatures</div>
+        </div>
+        <div class="card-body">
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
+            <div style="width:30px;height:30px;border-radius:50%;background:var(--green-l);border:1.5px solid var(--green-b);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--green);flex-shrink:0">RM</div>
+            <div style="flex:1"><div style="font-size:12px;font-weight:600">Rosa Mendez</div><div style="font-size:10px;color:var(--ink3)">Safety Plan · Agreed to services</div></div>
+            <span class="pill pill-green" style="font-size:10px">Signed</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
+            <div style="width:30px;height:30px;border-radius:50%;background:var(--green-l);border:1.5px solid var(--green-b);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--green);flex-shrink:0">JC</div>
+            <div style="flex:1"><div style="font-size:12px;font-weight:600">James Carter</div><div style="font-size:10px;color:var(--ink3)">Field Investigator · Case Worker</div></div>
+            <span class="pill pill-green" style="font-size:10px">Signed</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
+            <div style="width:30px;height:30px;border-radius:50%;background:var(--amber-l);border:1.5px solid var(--amber-b);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--amber);flex-shrink:0">DAP</div>
+            <div style="flex:1"><div style="font-size:12px;font-weight:600">Dr. Aisha Patel</div><div style="font-size:10px;color:var(--ink3)">Supervisor Review</div></div>
+            <span class="pill pill-amber" style="font-size:10px">Pending</span>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-primary" onclick="goToScreen(7)">
+        <i class="ti ti-arrow-right"></i>Submit &amp; Sync
+      </button>
+    </div>
+
+    <!-- SCREEN 7: Submit -->
+    <div class="screen hidden" id="screen-7">
+      <div class="screen-label">8 / 8</div>
+
+      <div style="text-align:center;padding:20px 10px">
+        <div style="width:72px;height:72px;border-radius:50%;background:var(--green-l);border:3px solid var(--green);display:flex;align-items:center;justify-content:center;margin:0 auto 12px">
+          <i class="ti ti-check" style="font-size:32px;color:var(--green)"></i>
+        </div>
+        <div style="font-size:20px;font-weight:700;color:var(--ink);margin-bottom:6px">Investigation Complete</div>
+        <div style="font-size:13px;color:var(--ink3);line-height:1.6">All fields documented · Safety plan established · Queued for sync when online</div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><div class="card-title"><i class="ti ti-list-check"></i>Submission Summary</div></div>
+        <div class="card-body" style="padding:8px">
+          <div style="display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:6px;background:var(--green-l);border:1px solid var(--green-b);margin-bottom:4px">
+            <i class="ti ti-check-circle" style="color:var(--green);font-size:14px;flex-shrink:0"></i>
+            <div><div style="font-size:12px;font-weight:600;color:var(--green)">Report #8821 — CS-2847 · Rivera</div><div style="font-size:10px;color:var(--ink3)">Substantiated · Physical Abuse</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:6px;background:var(--red-l);border:1px solid var(--red-b);margin-bottom:4px">
+            <i class="ti ti-alert-triangle" style="color:var(--red);font-size:14px;flex-shrink:0"></i>
+            <div><div style="font-size:12px;font-weight:600;color:var(--red)">SDM Assessment — Risk 8.2 HIGH</div><div style="font-size:10px;color:var(--ink3)">3/7 Section 1 indicators</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:6px;background:var(--green-l);border:1px solid var(--green-b);margin-bottom:4px">
+            <i class="ti ti-check-circle" style="color:var(--green);font-size:14px;flex-shrink:0"></i>
+            <div><div style="font-size:12px;font-weight:600;color:var(--green)">Safety Plan — Rosa signed</div><div style="font-size:10px;color:var(--ink3)">In-home services ordered</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:6px;background:var(--green-l);border:1px solid var(--green-b);margin-bottom:4px">
+            <i class="ti ti-check-circle" style="color:var(--green);font-size:14px;flex-shrink:0"></i>
+            <div><div style="font-size:12px;font-weight:600;color:var(--green)">Photos (2) + GPS log</div><div style="font-size:10px;color:var(--ink3)">Chain of custody logged</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:6px;background:var(--green-l);border:1px solid var(--green-b);margin-bottom:4px">
+            <i class="ti ti-check-circle" style="color:var(--green);font-size:14px;flex-shrink:0"></i>
+            <div><div style="font-size:12px;font-weight:600;color:var(--green)">Contact time: 1h 53m · Face To Face</div><div style="font-size:10px;color:var(--ink3)">GPS verified · chain of custody</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:6px;background:var(--amber-l);border:1px solid var(--amber-b);margin-bottom:4px">
+            <i class="ti ti-clock" style="color:var(--amber);font-size:14px;flex-shrink:0"></i>
+            <div><div style="font-size:12px;font-weight:600;color:var(--amber)">Supervisor notification</div><div style="font-size:10px;color:var(--ink3)">Dr. Patel — pending approval</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:6px;background:var(--blue-l);border:1px solid var(--blue-b);margin-bottom:4px">
+            <i class="ti ti-info-circle" style="color:var(--blue);font-size:14px;flex-shrink:0"></i>
+            <div><div style="font-size:12px;font-weight:600;color:var(--blue)">Next action: Placement check</div><div style="font-size:10px;color:var(--ink3)">Patricia Williams — Nov 15</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><div class="card-title"><i class="ti ti-cloud-upload"></i>Sync Queue</div></div>
+        <div class="card-body">
+          <div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:6px;background:var(--amber-l);border:1px solid var(--amber-b)">
+            <i class="ti ti-wifi-off" style="color:var(--amber);font-size:16px;flex-shrink:0"></i>
+            <div style="flex:1"><div style="font-size:12px;font-weight:700;color:var(--amber)">Offline — 6 items queued</div><div style="font-size:11px;color:var(--ink3)">Will sync automatically when connected</div></div>
+          </div>
+          <div style="margin-top:8px;font-size:11px;color:var(--ink3)">Local encrypted storage · Tamper-evident · Auto-retry on reconnect</div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px">
+        <button class="btn-primary" onclick="showToast('Court package generating...')">
+          <i class="ti ti-scale"></i>Generate Court Package
+        </button>
+        <button class="btn-secondary" onclick="goToScreen(0)">
+          <i class="ti ti-home"></i>Return to Dashboard
+        </button>
+      </div>
+    </div>
+
+  </div><!-- /screen-container -->
+
+  <!-- BOTTOM BAR -->
+  <div class="bottom-bar">
+    <div class="sync-status" id="sync-badge">
+      <i class="ti ti-wifi-off" style="font-size:14px"></i>
+      Offline · 6 queued
+    </div>
+    <button class="btn-secondary" style="width:auto;flex:0 0 auto;padding:8px 12px;font-size:12px" onclick="simulateSync()">
+      <i class="ti ti-refresh"></i>Sync
+    </button>
+  </div>
+
+</div><!-- /phone-inner -->
+</div><!-- /phone-frame -->
+
+<!-- Field map panel next to phone -->
+<div style="margin-left:32px;max-width:340px;color:rgba(255,255,255,.85)">
+  <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:12px">FIELD MAPPING — INVESTIGATION MODULE</div>
+
+  <div id="field-map" style="display:flex;flex-direction:column;gap:8px">
+    <!-- Populated by JS based on current screen -->
+  </div>
+
+  <div style="margin-top:20px;border-top:1px solid rgba(255,255,255,.1);padding-top:16px">
+    <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:10px">SCREEN NAVIGATION</div>
+    <div id="nav-dots" style="display:flex;gap:6px;flex-wrap:wrap">
+      <!-- Nav dots by JS -->
+    </div>
+  </div>
+
+  <div style="margin-top:16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:12px">
+    <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.5);margin-bottom:6px">ARCHITECTURE</div>
+    <div style="font-size:11px;color:rgba(255,255,255,.4);line-height:1.8">
+      ✓ Offline-first (SQLite local)<br>
+      ✓ GPS geofence + timestamp<br>
+      ✓ Chain of custody (photos)<br>
+      ✓ CONTACT_METHOD_CD codes<br>
+      ✓ SDM integration (real-time)<br>
+      ✓ AI agents inline (purple chips)<br>
+      ✓ Supervisor notification push<br>
+      ✓ Encrypted sync queue<br>
+      ✓ Signature capture<br>
+      ✓ Court package generation
+    </div>
+  </div>
+</div>
+
+<script>
+const SCREENS = [
+  {id:0, label:'Briefing',  icon:'ti-file-alert',   fields:['Report #','Allegation Type','Reporter','Prior Reports','Persons of Interest','Worker Safety Status','GPS Location']},
+  {id:1, label:'Arrival',   icon:'ti-home-2',       fields:['Visit Type','Arrival Time','Persons Present','Entry Granted','GPS Verification','Home Condition (5 factors)','Photo Documentation + Chain of Custody']},
+  {id:2, label:'Physical',  icon:'ti-stethoscope',  fields:['Injuries Observed (Y/N/U)','Injury Description','Body Location','Mechanism','Child Statement','Medical Need','Developmental Obs (under-5)']},
+  {id:3, label:'Interview', icon:'ti-message-circle',fields:['Interview Method (CONTACT_METHOD_CD)','Persons Interviewed (5)','Statement Verbatim','Credibility Assessment','AI Statement Analysis','Collateral Notes']},
+  {id:4, label:'SDM',       icon:'ti-shield-check', fields:['SDM Section 1 (7 indicators)','SDM Section 2 (6 factors)','AI Risk Score (0–10)','Weighted Factor Scores','Recommendation Engine','Supervisor Alert']},
+  {id:5, label:'Decision',  icon:'ti-gavel',        fields:['Immediate Safety Decision','Safety Plan Actions (5)','Disposition Code','Basis for Finding','Supervisor Approval Status','Kinship Scan Result']},
+  {id:6, label:'Docs',      icon:'ti-file-text',    fields:['Field Notes (AI-drafted)','Direct Contact Time (hrs)','Contact Method Code','Departure Time','Signature Capture (3 parties)','AI Spell Check']},
+  {id:7, label:'Submit',    icon:'ti-cloud-upload', fields:['Sync Queue Status','6 items encrypted','Photo + GPS metadata','Court Package Ready','AFCARS field mapping','Supervisor notification']},
+];
+
+let currentScreen = 0;
+
+function renderSteps() {
+  const bar = document.getElementById('step-bar');
+  bar.innerHTML = SCREENS.map((s,i) => {
+    const cls = i < currentScreen ? 'step done' : i === currentScreen ? 'step active' : 'step';
+    return `<div class="${cls}" onclick="goToScreen(${i})">
+      <div class="step-circle">${i < currentScreen ? '<i class="ti ti-check" style="font-size:11px"></i>' : i+1}</div>
+      <div class="step-label">${s.label}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderFieldMap() {
+  const s = SCREENS[currentScreen];
+  const fm = document.getElementById('field-map');
+  fm.innerHTML = `
+    <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:12px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+        <i class="ti ${s.icon}" style="color:#60A5FA;font-size:16px"></i>
+        <div style="font-size:13px;font-weight:700;color:#fff">Screen ${currentScreen+1}: ${s.label}</div>
+      </div>
+      ${s.fields.map(f=>`
+        <div style="display:flex;align-items:flex-start;gap:7px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.06)">
+          <i class="ti ti-arrow-right" style="color:#3B82F6;font-size:11px;margin-top:2px;flex-shrink:0"></i>
+          <span style="font-size:11px;color:rgba(255,255,255,.65)">${f}</span>
+        </div>`).join('')}
+    </div>
+  `;
+  
+  // Nav dots
+  const nd = document.getElementById('nav-dots');
+  nd.innerHTML = SCREENS.map((s,i) => 
+    `<button onclick="goToScreen(${i})" style="display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;padding:4px">
+      <div style="width:${i===currentScreen?20:10}px;height:6px;border-radius:3px;background:${i<currentScreen?'#10B981':i===currentScreen?'#3B82F6':'rgba(255,255,255,.2)'};transition:all .2s"></div>
+      <span style="font-size:9px;color:rgba(255,255,255,.3)">${s.label}</span>
+    </button>`
+  ).join('');
+}
+
+function goToScreen(n) {
+  if(n < 0 || n >= SCREENS.length) return;
+  const old = document.getElementById('screen-' + currentScreen);
+  const next = document.getElementById('screen-' + n);
+  if(!old || !next) return;
+  
+  const dir = n > currentScreen;
+  old.classList.add(dir ? 'hidden-left' : 'hidden');
+  next.classList.remove('hidden', 'hidden-left');
+  currentScreen = n;
+  
+  // Update title
+  const titles = ['Case Briefing','Arrival & Home Visit','Physical Observation','Conduct Interviews','SDM Assessment','Safety Decision','Field Documentation','Submit & Sync'];
+  const t = document.getElementById('app-title');
+  if(t) t.textContent = titles[n] || 'Investigation';
+  
+  renderSteps();
+  renderFieldMap();
+}
+
+function navBack() {
+  if(currentScreen > 0) goToScreen(currentScreen - 1);
+}
+
+function toggleSel(btn, grp) {
+  const parent = btn.parentElement;
+  parent.querySelectorAll('.toggle-btn').forEach(b => {
+    b.classList.remove('sel-yes','sel-no','sel-unk','sel-blue');
+  });
+  const text = btn.textContent.trim();
+  if(text === 'Yes' || text === 'Yes — Emergency') btn.classList.add('sel-yes');
+  else if(text === 'No') btn.classList.add('sel-no');
+  else if(text === 'Unknown' || text === 'Recommend Exam') btn.classList.add('sel-unk');
+  else btn.classList.add('sel-blue');
+}
+
+function cycleRF(row) {
+  const states = ['','pos','neg','unk'];
+  let cur = '';
+  for(const s of ['pos','neg','unk']) { if(row.classList.contains(s)) { cur = s; break; } }
+  const next = states[(states.indexOf(cur) + 1) % states.length];
+  row.classList.remove('pos','neg','unk');
+  if(next) row.classList.add(next);
+  const text = row.querySelector('.rf-text');
+  const val = row.querySelectorAll('div')[1];
+  if(val) {
+    if(next === 'pos') val.textContent = '✓ Present';
+    else if(next === 'neg') val.textContent = '✓ Safe';
+    else if(next === 'unk') val.textContent = '? Unknown';
+    else val.textContent = '—';
+  }
+}
+
+function showAIBriefing() {
+  const r = document.getElementById('ai-briefing');
+  r.classList.toggle('show');
+}
+function showAIInterview() {
+  const r = document.getElementById('ai-interview');
+  r.classList.toggle('show');
+}
+function showAISDM() {
+  const r = document.getElementById('ai-sdm');
+  r.classList.toggle('show');
+}
+
+function updateDecision(val) {
+  const d = document.getElementById('decision-display');
+  if(!d) return;
+  const defs = {
+    'safe': ['safe','ti-home-check','var(--green)','Safe — No Removal','Children safe in home. Document safety factors. Schedule follow-up visit.'],
+    'plan': ['safe','ti-home-check','var(--green)','In-Home Safety Plan','Children remain with safety plan. Enhanced supervision required.'],
+    'remove': ['unsafe','ti-alert-triangle','var(--red)','Emergency Removal','Imminent danger. Contact supervisor immediately. Locate kinship placement.'],
+    'voluntary': ['pending','ti-users','var(--amber)','Voluntary Placement','Parent agrees to temporary placement. Document consent.'],
+  };
+  const def = defs[val] || defs['plan'];
+  d.className = 'decision-card ' + def[0];
+  d.innerHTML = `<div class="dc-icon"><i class="ti ${def[1]}" style="color:${def[2]}"></i></div>
+    <div class="dc-title" style="color:${def[2]}">${def[3]}</div>
+    <div class="dc-sub" style="color:var(--ink3)">${def[4]}</div>`;
+}
+
+function showToast(msg) {
+  const existing = document.querySelector('.toast');
+  if(existing) existing.remove();
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  document.getElementById('app').appendChild(t);
+  setTimeout(() => t.remove(), 2100);
+}
+
+function simulateSync() {
+  const badge = document.getElementById('sync-badge');
+  badge.innerHTML = '<i class="ti ti-loader" style="animation:spin .8s linear infinite;font-size:14px"></i> Syncing...';
+  setTimeout(() => {
+    badge.className = 'sync-status synced';
+    badge.innerHTML = '<i class="ti ti-check" style="font-size:14px"></i> Synced — 6 items sent';
+    showToast('✓ Synced to CCWIS');
+  }, 1800);
+}
+
+const style = document.createElement('style');
+style.textContent = '@keyframes spin{to{transform:rotate(360deg)}}';
+document.head.appendChild(style);
+
+// Init
+renderSteps();
+renderFieldMap();
+
+/* ══════════════════════════════════════════
+   PHOTO DOCUMENTATION — FUNCTIONAL ENGINE
+   Features:
+   - Real camera capture via file input
+   - Image preview from device camera
+   - Thumbnail grid with labels
+   - Category tagging
+   - Delete with confirmation
+   - Edit label modal
+   - Chain of custody metadata (GPS, timestamp, device ID)
+   - Sync queue simulation (offline-first)
+   - Photo viewer modal
+══════════════════════════════════════════ */
+
+/* Photo store */
+const photos = [
+  {
+    id: 1,
+    src: null,          // null = placeholder (pre-existing demo photos)
+    label: 'Bruise · left arm',
+    category: 'Evidence',
+    time: '15:24',
+    date: '11/14/2024',
+    gps: '38.9071° N, 77.0369° W',
+    device: 'JC-iPhone14-7821',
+    queued: true,
+    icon: 'ti-user',
+    color: '#C81E1E',
+    bg: '#FFF5F5'
+  },
+  {
+    id: 2,
+    src: null,
+    label: 'Living room condition',
+    category: 'Home Condition',
+    time: '15:31',
+    date: '11/14/2024',
+    gps: '38.9071° N, 77.0369° W',
+    device: 'JC-iPhone14-7821',
+    queued: true,
+    icon: 'ti-sofa',
+    color: '#92400E',
+    bg: '#FFFBEB'
+  }
+];
+
+let currentPhotoId = null;
+let activeCategory = 'Evidence';
+let nextPhotoId = 3;
+
+/* ── RENDER ── */
+function renderPhotoGrid() {
+  const grid = document.getElementById('photo-grid');
+  if (!grid) return;
+
+  let html = '';
+
+  // Existing photos
+  photos.forEach(p => {
+    const isImg = p.src && p.src.startsWith('data:');
+    html += `
+      <div class="photo-taken" onclick="openPhotoViewer(${p.id})" style="cursor:pointer;position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;background:${p.bg || '#1e293b'}">
+        ${isImg
+          ? `<img src="${p.src}" style="width:100%;height:100%;object-fit:cover" alt="${p.label}">`
+          : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:${p.bg||'#1e293b'}"><i class="ti ${p.icon||'ti-photo'}" style="font-size:26px;color:${p.color||'rgba(255,255,255,.35)'}"></i></div>`
+        }
+        ${p.queued ? '<div style="position:absolute;top:5px;right:5px;width:8px;height:8px;border-radius:50%;background:#FCD34D;border:1.5px solid rgba(0,0,0,.2)"></div>' : ''}
+        <div class="photo-tag">${p.label}</div>
+      </div>`;
+  });
+
+  // Add photo button
+  html += `
+    <div class="photo-slot" onclick="triggerCamera()" style="cursor:pointer;aspect-ratio:1;border-radius:10px;border:2px dashed var(--border2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:var(--surface);transition:all .15s" onmouseover="this.style.borderColor='var(--blue)'" onmouseout="this.style.borderColor='var(--border2)'">
+      <i class="ti ti-camera-plus" style="font-size:22px;color:var(--ink4)"></i>
+      <span style="font-size:11px;color:var(--ink4);font-weight:500">Add photo</span>
+    </div>`;
+
+  grid.innerHTML = html;
+
+  // Update count
+  const countEl = document.getElementById('photo-count');
+  if (countEl) countEl.textContent = photos.length;
+
+  // Update sync badge
+  const badge = document.getElementById('photo-sync-badge');
+  if (badge) {
+    const queued = photos.filter(p => p.queued).length;
+    if (queued > 0) {
+      badge.textContent = `Offline — ${queued} queued`;
+      badge.className = 'pill pill-amber';
+    } else {
+      badge.textContent = 'Synced';
+      badge.className = 'pill pill-green';
+    }
+  }
+}
+
+/* ── CAMERA TRIGGER ── */
+function triggerCamera() {
+  const input = document.getElementById('photo-file-input');
+  if (input) input.click();
+}
+
+/* ── HANDLE FILE SELECTED ── */
+function handlePhotoFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    // Generate GPS / metadata
+    const now = new Date();
+    const timeStr = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+    const dateStr = (now.getMonth()+1) + '/' + now.getDate() + '/' + now.getFullYear();
+
+    const newPhoto = {
+      id: nextPhotoId++,
+      src: e.target.result,
+      label: activeCategory + ' · ' + timeStr,
+      category: activeCategory,
+      time: timeStr,
+      date: dateStr,
+      gps: '38.9071° N, 77.0369° W',
+      device: 'JC-Field-Device',
+      queued: true,
+      icon: 'ti-photo',
+      color: '#fff',
+      bg: '#0f172a'
+    };
+
+    photos.push(newPhoto);
+    renderPhotoGrid();
+    showToast('📷 Photo added — ' + activeCategory);
+
+    // Clear input for next use
+    input.value = '';
+
+    // Open label editor immediately
+    currentPhotoId = newPhoto.id;
+    openLabelModal(newPhoto.label);
+  };
+  reader.readAsDataURL(file);
+}
+
+/* ── PHOTO VIEWER ── */
+function openPhotoViewer(id) {
+  const photo = photos.find(p => p.id === id);
+  if (!photo) return;
+  currentPhotoId = id;
+
+  const viewer = document.getElementById('photo-viewer');
+  const img = document.getElementById('viewer-img');
+  const label = document.getElementById('viewer-label');
+  const meta = document.getElementById('viewer-meta');
+  const wrap = document.getElementById('viewer-img-wrap');
+
+  if (photo.src && photo.src.startsWith('data:')) {
+    img.src = photo.src;
+    img.style.display = 'block';
+    wrap.style.background = '#000';
+  } else {
+    img.src = '';
+    img.style.display = 'none';
+    // Show placeholder with icon
+    wrap.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;gap:10px;background:${photo.bg||'#1e293b'}"><i class="ti ${photo.icon||'ti-photo'}" style="font-size:52px;color:${photo.color||'rgba(255,255,255,.4)'}"></i><span style="font-size:13px;color:rgba(255,255,255,.4)">${photo.label}</span></div>`;
+  }
+
+  if (label) label.textContent = photo.label;
+  if (meta) meta.innerHTML = `
+    <div><div style="font-size:10px;opacity:.5;margin-bottom:2px">Category</div><div style="color:#fff;font-weight:600">${photo.category}</div></div>
+    <div><div style="font-size:10px;opacity:.5;margin-bottom:2px">Time</div><div style="color:#fff;font-weight:600">${photo.date} ${photo.time}</div></div>
+    <div><div style="font-size:10px;opacity:.5;margin-bottom:2px">GPS</div><div style="color:#fff;font-weight:600;font-size:10px">${photo.gps}</div></div>
+    <div><div style="font-size:10px;opacity:.5;margin-bottom:2px">Status</div><div style="color:${photo.queued?'#FCD34D':'#34D399'};font-weight:700">${photo.queued?'⏳ Queued':'✓ Synced'}</div></div>
+  `;
+
+  if (viewer) {
+    viewer.style.display = 'flex';
+    viewer.style.animation = 'fadein .2s ease';
+  }
+}
+
+function closePhotoViewer() {
+  const viewer = document.getElementById('photo-viewer');
+  if (viewer) viewer.style.display = 'none';
+}
+
+/* ── DELETE ── */
+function deleteCurrentPhoto() {
+  if (!currentPhotoId) return;
+  const idx = photos.findIndex(p => p.id === currentPhotoId);
+  if (idx === -1) return;
+
+  const photo = photos[idx];
+
+  // Inline confirm in the viewer
+  const wrap = document.getElementById('viewer-img-wrap');
+  if (wrap) {
+    wrap.innerHTML = `
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;gap:12px;background:var(--red-l);padding:20px;text-align:center">
+        <i class="ti ti-trash" style="font-size:36px;color:var(--red)"></i>
+        <div style="font-size:14px;font-weight:700;color:var(--red)">Delete "${photo.label}"?</div>
+        <div style="font-size:12px;color:var(--ink3)">This cannot be undone. Chain of custody log will record this deletion.</div>
+        <div style="display:flex;gap:8px;width:100%">
+          <button onclick="cancelDelete()" style="flex:1;padding:10px;border-radius:8px;background:var(--surface);border:1.5px solid var(--border);color:var(--ink);font-size:12px;font-weight:700;cursor:pointer;font-family:var(--f)">Keep</button>
+          <button onclick="confirmDelete(${currentPhotoId})" style="flex:1;padding:10px;border-radius:8px;background:var(--red);border:none;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--f)">Delete</button>
+        </div>
+      </div>`;
+  }
+}
+
+function cancelDelete() {
+  if (currentPhotoId) openPhotoViewer(currentPhotoId);
+}
+
+function confirmDelete(id) {
+  const idx = photos.findIndex(p => p.id === id);
+  if (idx !== -1) photos.splice(idx, 1);
+  closePhotoViewer();
+  renderPhotoGrid();
+  showToast('Photo deleted — logged to chain of custody');
+  currentPhotoId = null;
+}
+
+/* ── LABEL EDIT ── */
+function editPhotoLabel() {
+  const photo = photos.find(p => p.id === currentPhotoId);
+  if (!photo) return;
+  openLabelModal(photo.label);
+}
+
+function openLabelModal(currentLabel) {
+  const modal = document.getElementById('label-modal');
+  const input = document.getElementById('label-input');
+  if (modal) modal.style.display = 'flex';
+  if (input) { input.value = currentLabel || ''; input.focus(); }
+  closePhotoViewer();
+}
+
+function closeLabelModal() {
+  const modal = document.getElementById('label-modal');
+  if (modal) modal.style.display = 'none';
+  // Re-open viewer if we were editing
+  if (currentPhotoId) openPhotoViewer(currentPhotoId);
+}
+
+function saveLabelModal() {
+  const input = document.getElementById('label-input');
+  const modal = document.getElementById('label-modal');
+  const newLabel = input ? input.value.trim() : '';
+  if (!newLabel) { showToast('Please enter a label'); return; }
+
+  const photo = photos.find(p => p.id === currentPhotoId);
+  if (photo) photo.label = newLabel;
+
+  if (modal) modal.style.display = 'none';
+  renderPhotoGrid();
+  showToast('Label saved');
+  openPhotoViewer(currentPhotoId);
+}
+
+/* ── CATEGORY SELECTOR ── */
+function setPhotoCategory(btn, category) {
+  activeCategory = category;
+  document.querySelectorAll('.photo-cat-btn').forEach(b => {
+    b.style.background = 'var(--surface)';
+    b.style.color = 'var(--ink3)';
+    b.style.borderColor = 'var(--border)';
+  });
+  btn.style.background = 'var(--blue-l)';
+  btn.style.color = 'var(--blue)';
+  btn.style.borderColor = 'var(--blue)';
+}
+
+/* ── KEYBOARD / TAP CLOSE ── */
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closePhotoViewer();
+    closeLabelModal();
+  }
+});
+
+/* ── INIT ── */
+document.addEventListener('DOMContentLoaded', function() {
+  renderPhotoGrid();
+});
+
+/* Also re-render when screen 1 is shown */
+const _origGoToScreen = goToScreen;
+goToScreen = function(n) {
+  _origGoToScreen(n);
+  if (n === 1) setTimeout(renderPhotoGrid, 50);
+};
+
+/* ══════════════════════════════════════════
+   INTERVIEW LOG ENGINE
+══════════════════════════════════════════ */
+
+const interviews = [
+  {id:1, name:'Sophia Rivera', initials:'SR', avatarBg:'#FFF5F5', avatarColor:'#C81E1E',
+   role:'Child — Subject', method:'FF', location:'School', date:'11/14/2024', time:'15:22',
+   statement:'Sophia stated an adult grabbed her arm forcibly. Identified upper left arm bruise. Appeared fearful when discussing return home situation.',
+   credibility:'Credible — consistent, age-appropriate', status:'Complete', interpreter:'No'},
+  {id:2, name:'Rosa Mendez', initials:'RM', avatarBg:'#F0FDF4', avatarColor:'#057A55',
+   role:'Birth Parent / Caretaker', method:'FF', location:'Home', date:'11/14/2024', time:'15:44',
+   statement:'Rosa minimized the injury, stated it was accidental. Did not provide consistent explanation. Agreed to safety plan and signed.',
+   credibility:'Partially credible — inconsistencies noted', status:'Complete', interpreter:'Yes — Spanish'},
+  {id:3, name:'Mateo Rivera', initials:'MR', avatarBg:'#EBF5FF', avatarColor:'#1A56DB',
+   role:'Child — Sibling', method:'FF', location:'Home', date:'11/14/2024', time:'16:10',
+   statement:'Age 4 — verbal screening only. No disclosure. Appeared well-nourished and alert. Developmental observation: age-appropriate.',
+   credibility:'Unable to assess — child non-verbal', status:'Complete', interpreter:'No'},
+  {id:4, name:'Ms. Patterson', initials:'PP', avatarBg:'#FFFBEB', avatarColor:'#92400E',
+   role:'Teacher / School Staff', method:'PH', location:'Phone', date:'11/15/2024', time:'09:00',
+   statement:'Confirmed irregular attendance (85%). Noted behavioral changes in October — withdrawn, difficulty concentrating. No prior disclosures at school.',
+   credibility:'Credible — consistent with evidence', status:'Complete', interpreter:'No'},
+  {id:5, name:'Linda Chen', initials:'LC', avatarBg:'#F5F3FF', avatarColor:'#5521B5',
+   role:'Neighbor', method:'PH', location:'Phone', date:'11/14/2024', time:'—',
+   statement:'', credibility:'', status:'Pending', interpreter:'No'},
+];
+let nextInterviewId = 6;
+let currentInterviewStatus = 'Complete';
+let editingInterviewId = null;
+
+function renderInterviewList() {
+  const list = document.getElementById('interview-list');
+  if (!list) return;
+  const pillClass = {Complete:'pill-green', Partial:'pill-amber', Pending:'pill-amber'};
+  list.innerHTML = interviews.map((iv, i) => `
+    <div class="interview-item" onclick="openInterviewDetail(${i})">
+      <div class="ii-avatar" style="background:${iv.avatarBg};color:${iv.avatarColor}">${iv.initials}</div>
+      <div class="ii-meta">
+        <div class="ii-name">${iv.name}</div>
+        <div class="ii-role">${iv.role} · <span style="font-size:10px;font-weight:700;background:var(--blue-l);color:var(--blue);padding:2px 8px;border-radius:20px;border:1px solid var(--blue-b)">${iv.method}</span> ${iv.location}</div>
+      </div>
+      <div class="ii-status"><span class="pill ${pillClass[iv.status]||'pill-amber'}" style="font-size:10px">${iv.status}</span></div>
+    </div>`).join('');
+}
+
+function openNewInterviewModal() {
+  editingInterviewId = null;
+  ['im-name','im-statement'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  const role = document.getElementById('im-role'); if (role) role.value = '';
+  const cred = document.getElementById('im-credibility'); if (cred) cred.value = '';
+  const method = document.getElementById('im-method'); if (method) method.value = 'FF';
+  const loc = document.getElementById('im-location'); if (loc) loc.value = 'Home';
+  const now = new Date();
+  const dateEl = document.getElementById('im-date');
+  if (dateEl) dateEl.value = now.toISOString().split('T')[0];
+  const timeEl = document.getElementById('im-time');
+  if (timeEl) timeEl.value = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+  currentInterviewStatus = 'Complete';
+  document.querySelectorAll('#im-status-grp .toggle-btn').forEach(b => b.classList.remove('sel-yes','sel-no','sel-unk','sel-blue'));
+  const sb = document.querySelectorAll('#im-status-grp .toggle-btn');
+  if (sb[0]) sb[0].classList.add('sel-yes');
+  const err = document.getElementById('im-error'); if (err) err.style.display = 'none';
+  const title = document.getElementById('im-title'); if (title) title.textContent = 'New Interview';
+  const saveBtn = document.getElementById('im-save-btn');
+  if (saveBtn) saveBtn.innerHTML = '<i class="ti ti-check"></i>Save Interview';
+  const modal = document.getElementById('interview-modal');
+  if (modal) modal.style.display = 'flex';
+}
+
+function imSetStatus(btn, status) {
+  currentInterviewStatus = status;
+  document.querySelectorAll('#im-status-grp .toggle-btn').forEach(b => b.classList.remove('sel-yes','sel-no','sel-unk','sel-blue'));
+  if (status === 'Complete') btn.classList.add('sel-yes');
+  else if (status === 'Pending') btn.classList.add('sel-unk');
+  else btn.classList.add('sel-blue');
+}
+
+function closeInterviewModal() {
+  const modal = document.getElementById('interview-modal');
+  if (modal) modal.style.display = 'none';
+}
+
+function saveInterview() {
+  const name = (document.getElementById('im-name') || {}).value || '';
+  const trimmedName = name.trim();
+  const role = (document.getElementById('im-role') || {}).value || '';
+  const method = (document.getElementById('im-method') || {}).value || 'FF';
+  const location = (document.getElementById('im-location') || {}).value || 'Home';
+  const date = (document.getElementById('im-date') || {}).value || '';
+  const time = (document.getElementById('im-time') || {}).value || '';
+  const statement = ((document.getElementById('im-statement') || {}).value || '').trim();
+  const credibility = (document.getElementById('im-credibility') || {}).value || '';
+  const err = document.getElementById('im-error');
+  if (!trimmedName || !role || !date) { if (err) err.style.display = 'block'; return; }
+  if (err) err.style.display = 'none';
+  const dateObj = new Date(date + 'T12:00:00');
+  const displayDate = (dateObj.getMonth()+1) + '/' + dateObj.getDate() + '/' + dateObj.getFullYear();
+  const initials = trimmedName.split(' ').map(w => w[0] || '').slice(0,2).join('').toUpperCase();
+  const palettes = [
+    {bg:'#EEF2FF',color:'#3730A3'}, {bg:'#FFF5F5',color:'#C81E1E'},
+    {bg:'#F0FDF4',color:'#057A55'}, {bg:'#FFFBEB',color:'#92400E'},
+    {bg:'#EBF5FF',color:'#1A56DB'}, {bg:'#F5F3FF',color:'#5521B5'},
+  ];
+  const pal = palettes[nextInterviewId % palettes.length];
+  if (editingInterviewId !== null) {
+    const idx = interviews.findIndex(iv => iv.id === editingInterviewId);
+    if (idx !== -1) Object.assign(interviews[idx], {name:trimmedName, initials, avatarBg:pal.bg, avatarColor:pal.color, role, method, location, date:displayDate, time:time||'—', statement, credibility, status:currentInterviewStatus});
+    showToast('Interview updated');
+  } else {
+    interviews.push({id:nextInterviewId++, name:trimmedName, initials, avatarBg:pal.bg, avatarColor:pal.color, role, method, location, date:displayDate, time:time||'—', statement, credibility, status:currentInterviewStatus, interpreter:'No'});
+    showToast('Interview added — ' + trimmedName);
+  }
+  closeInterviewModal();
+  renderInterviewList();
+}
+
+function openInterviewDetail(idx) {
+  const iv = interviews[idx];
+  if (!iv) return;
+  const modal = document.getElementById('interview-detail-modal');
+  const title = document.getElementById('detail-title');
+  const body = document.getElementById('detail-body');
+  if (title) title.textContent = iv.name;
+  const sc = iv.status === 'Complete' ? 'var(--green)' : iv.status === 'Pending' ? 'var(--amber)' : 'var(--blue)';
+  const sb2 = iv.status === 'Complete' ? 'var(--green-l)' : iv.status === 'Pending' ? 'var(--amber-l)' : 'var(--blue-l)';
+  if (body) body.innerHTML =
+    '<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);margin-bottom:12px">' +
+      '<div style="width:44px;height:44px;border-radius:50%;background:' + iv.avatarBg + ';display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:' + iv.avatarColor + ';flex-shrink:0">' + iv.initials + '</div>' +
+      '<div style="flex:1"><div style="font-size:15px;font-weight:700;color:var(--ink)">' + iv.name + '</div><div style="font-size:12px;color:var(--ink3)">' + iv.role + '</div></div>' +
+      '<span style="font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;background:' + sb2 + ';color:' + sc + '">' + iv.status + '</span>' +
+    '</div>' +
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">' +
+      '<div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 10px"><div style="font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px">Method</div><span style="font-size:12px;font-weight:700;background:var(--blue-l);color:var(--blue);padding:2px 10px;border-radius:20px;border:1px solid var(--blue-b)">' + iv.method + '</span></div>' +
+      '<div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 10px"><div style="font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px">Location</div><div style="font-size:13px;color:var(--ink)">' + iv.location + '</div></div>' +
+      '<div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 10px"><div style="font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px">Date</div><div style="font-size:13px;color:var(--ink)">' + iv.date + '</div></div>' +
+      '<div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 10px"><div style="font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px">Time</div><div style="font-size:13px;color:var(--ink)">' + iv.time + '</div></div>' +
+    '</div>' +
+    (iv.statement
+      ? '<div style="margin-bottom:10px"><div style="font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px">Statement</div><div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:13px;color:var(--ink2);line-height:1.65">' + iv.statement + '</div></div>'
+      : '<div style="background:var(--amber-l);border:1.5px solid var(--amber-b);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--amber);margin-bottom:10px"><i class="ti ti-clock" style="font-size:12px"></i> No statement recorded yet.</div>') +
+    (iv.credibility
+      ? '<div style="margin-bottom:14px"><div style="font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px">Credibility</div><div style="background:var(--green-l);border:1px solid var(--green-b);border-radius:8px;padding:8px 12px;font-size:12px;color:var(--green);font-weight:600">' + iv.credibility + '</div></div>'
+      : '') +
+    '<div style="display:flex;gap:8px">' +
+      '<button onclick="deleteInterview(' + iv.id + ')" style="flex:1;padding:11px;border-radius:8px;background:var(--red-l);border:1.5px solid var(--red-b);color:var(--red);font-size:12px;font-weight:700;cursor:pointer;font-family:var(--f);display:flex;align-items:center;justify-content:center;gap:5px"><i class="ti ti-trash"></i>Delete</button>' +
+      '<button onclick="editInterview(' + iv.id + ')" style="flex:2;padding:11px;border-radius:8px;background:var(--blue);border:none;color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--f);display:flex;align-items:center;justify-content:center;gap:6px"><i class="ti ti-pencil"></i>Edit Interview</button>' +
+    '</div>';
+  if (modal) modal.style.display = 'flex';
+}
+
+function closeDetailModal() {
+  const modal = document.getElementById('interview-detail-modal');
+  if (modal) modal.style.display = 'none';
+}
+
+function editInterview(id) {
+  const iv = interviews.find(i => i.id === id);
+  if (!iv) return;
+  editingInterviewId = id;
+  closeDetailModal();
+  const set = (elId, val) => { const el = document.getElementById(elId); if (el) el.value = val || ''; };
+  set('im-name', iv.name);
+  set('im-statement', iv.statement);
+  set('im-credibility', iv.credibility);
+  const roleEl = document.getElementById('im-role');
+  if (roleEl) { const opt = [...roleEl.options].find(o => o.value === iv.role || o.text === iv.role); if (opt) roleEl.value = opt.value; }
+  const methodEl = document.getElementById('im-method'); if (methodEl) methodEl.value = iv.method || 'FF';
+  const locEl = document.getElementById('im-location'); if (locEl) locEl.value = iv.location || 'Home';
+  const parts = (iv.date || '').split('/');
+  if (parts.length === 3) { const dateEl = document.getElementById('im-date'); if (dateEl) dateEl.value = parts[2] + '-' + parts[0].padStart(2,'0') + '-' + parts[1].padStart(2,'0'); }
+  const timeEl = document.getElementById('im-time'); if (timeEl) timeEl.value = iv.time === '—' ? '' : (iv.time || '');
+  currentInterviewStatus = iv.status || 'Complete';
+  document.querySelectorAll('#im-status-grp .toggle-btn').forEach(b => {
+    b.classList.remove('sel-yes','sel-no','sel-unk','sel-blue');
+    if (b.textContent.trim() === currentInterviewStatus) {
+      if (currentInterviewStatus === 'Complete') b.classList.add('sel-yes');
+      else if (currentInterviewStatus === 'Pending') b.classList.add('sel-unk');
+      else b.classList.add('sel-blue');
+    }
+  });
+  const title = document.getElementById('im-title'); if (title) title.textContent = 'Edit Interview';
+  const saveBtn = document.getElementById('im-save-btn'); if (saveBtn) saveBtn.innerHTML = '<i class="ti ti-check"></i>Update Interview';
+  const err = document.getElementById('im-error'); if (err) err.style.display = 'none';
+  const modal = document.getElementById('interview-modal'); if (modal) modal.style.display = 'flex';
+}
+
+function deleteInterview(id) {
+  const idx = interviews.findIndex(iv => iv.id === id);
+  if (idx !== -1) interviews.splice(idx, 1);
+  closeDetailModal();
+  renderInterviewList();
+  showToast('Interview deleted');
+}
+
+['interview-modal','interview-detail-modal'].forEach(modalId => {
+  document.addEventListener('click', function(e) {
+    const modal = document.getElementById(modalId);
+    if (modal && e.target === modal) modal.style.display = 'none';
+  });
+});
+
+/* Re-render when screen 3 opens */
+const _ivGoToScreen = goToScreen;
+goToScreen = function(n) {
+  _ivGoToScreen(n);
+  if (n === 3) setTimeout(renderInterviewList, 50);
+};
+</script>
+
+<!-- ══ NEW INTERVIEW MODAL ══ -->
+<div id="interview-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:900;align-items:flex-end;justify-content:center">
+  <div style="width:100%;max-width:390px;background:var(--card);border-radius:20px 20px 0 0;max-height:90vh;overflow-y:auto;scrollbar-width:none">
+    <!-- Handle -->
+    <div style="display:flex;justify-content:center;padding:10px 0 0">
+      <div style="width:40px;height:4px;border-radius:2px;background:var(--border2)"></div>
+    </div>
+    <!-- Header -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px 10px">
+      <div style="font-size:16px;font-weight:700;color:var(--ink)" id="im-title">New Interview</div>
+      <button onclick="closeInterviewModal()" style="width:32px;height:32px;border-radius:50%;background:var(--surface);border:1.5px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--ink3)"><i class="ti ti-x"></i></button>
+    </div>
+
+    <div style="padding:0 14px 24px" id="im-body">
+
+      <!-- Person -->
+      <div class="field">
+        <div class="field-label req">Person Interviewed</div>
+        <input type="text" class="field-input" id="im-name" placeholder="Full name" autocomplete="off">
+      </div>
+
+      <!-- Role -->
+      <div class="field">
+        <div class="field-label req">Role / Relationship</div>
+        <select class="field-select" id="im-role">
+          <option value="">— Select role —</option>
+          <option>Child — Subject</option>
+          <option>Child — Sibling</option>
+          <option>Birth Parent / Caretaker</option>
+          <option>Step-parent / Partner</option>
+          <option>Relative / Kinship</option>
+          <option>Foster / Kinship Caregiver</option>
+          <option>Teacher / School Staff</option>
+          <option>Physician / Medical</option>
+          <option>Neighbor</option>
+          <option>Law Enforcement</option>
+          <option>Reporter</option>
+          <option>Other Collateral</option>
+        </select>
+      </div>
+
+      <!-- Method + Location row -->
+      <div class="fg2">
+        <div class="field">
+          <div class="field-label req">Contact Method</div>
+          <select class="field-select" id="im-method">
+            <option value="FF">FF — Face To Face</option>
+            <option value="PH">PH — Telephone Call</option>
+            <option value="EM">EM — E-Mail</option>
+            <option value="VM">VM — Voice Mail</option>
+            <option value="LT">LT — Letter</option>
+            <option value="OT">OT — Other</option>
+          </select>
+        </div>
+        <div class="field">
+          <div class="field-label req">Location</div>
+          <select class="field-select" id="im-location">
+            <option>Home</option>
+            <option>School</option>
+            <option>Office</option>
+            <option>Hospital</option>
+            <option>Phone</option>
+            <option>Other</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Date + Time row -->
+      <div class="fg2">
+        <div class="field">
+          <div class="field-label req">Date</div>
+          <input type="date" class="field-input" id="im-date">
+        </div>
+        <div class="field">
+          <div class="field-label req">Time</div>
+          <input type="time" class="field-input" id="im-time">
+        </div>
+      </div>
+
+      <!-- Interpreter -->
+      <div class="field">
+        <div class="field-label">Interpreter Required</div>
+        <div class="toggle-group" id="im-interp-grp">
+          <button class="toggle-btn" onclick="toggleSel(this,'im-interp-grp')">Yes — Spanish</button>
+          <button class="toggle-btn sel-no" onclick="toggleSel(this,'im-interp-grp')">No</button>
+          <button class="toggle-btn" onclick="toggleSel(this,'im-interp-grp')">Other</button>
+        </div>
+      </div>
+
+      <!-- Statement -->
+      <div class="field">
+        <div class="field-label req">Statement / Summary</div>
+        <textarea class="field-textarea" id="im-statement" placeholder="Document what was said — use verbatim quotes where possible..."></textarea>
+      </div>
+
+      <!-- Credibility -->
+      <div class="field">
+        <div class="field-label">Credibility Assessment</div>
+        <select class="field-select" id="im-credibility">
+          <option value="">— Select —</option>
+          <option>Credible — consistent, age-appropriate</option>
+          <option>Credible — consistent with evidence</option>
+          <option>Partially credible — inconsistencies noted</option>
+          <option>Unable to assess — child non-verbal</option>
+          <option>Inconsistent — further evaluation needed</option>
+          <option>N/A — collateral contact</option>
+        </select>
+      </div>
+
+      <!-- Status -->
+      <div class="field">
+        <div class="field-label req">Status</div>
+        <div class="toggle-group" id="im-status-grp">
+          <button class="toggle-btn sel-yes" onclick="imSetStatus(this,'Complete')">Complete</button>
+          <button class="toggle-btn" onclick="imSetStatus(this,'Partial')">Partial</button>
+          <button class="toggle-btn sel-unk" onclick="imSetStatus(this,'Pending')">Pending</button>
+        </div>
+      </div>
+
+      <!-- Validation msg -->
+      <div id="im-error" style="display:none;background:var(--red-l);border:1.5px solid var(--red-b);border-radius:8px;padding:9px 12px;font-size:12px;color:var(--red);margin-bottom:10px">
+        <i class="ti ti-alert-triangle" style="font-size:13px"></i> Please complete all required fields.
+      </div>
+
+      <!-- Actions -->
+      <div style="display:flex;gap:8px;margin-top:4px">
+        <button onclick="closeInterviewModal()" class="btn-secondary" style="flex:1;padding:13px;font-size:13px">Cancel</button>
+        <button onclick="saveInterview()" class="btn-primary" style="flex:2;padding:13px;font-size:14px" id="im-save-btn">
+          <i class="ti ti-check"></i>Save Interview
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══ INTERVIEW DETAIL MODAL ══ -->
+<div id="interview-detail-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:900;align-items:flex-end;justify-content:center">
+  <div style="width:100%;max-width:390px;background:var(--card);border-radius:20px 20px 0 0;max-height:88vh;overflow-y:auto;scrollbar-width:none">
+    <div style="display:flex;justify-content:center;padding:10px 0 0">
+      <div style="width:40px;height:4px;border-radius:2px;background:var(--border2)"></div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px 10px">
+      <div style="font-size:15px;font-weight:700;color:var(--ink)" id="detail-title">Interview Details</div>
+      <button onclick="closeDetailModal()" style="width:32px;height:32px;border-radius:50%;background:var(--surface);border:1.5px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--ink3)"><i class="ti ti-x"></i></button>
+    </div>
+    <div id="detail-body" style="padding:0 14px 24px"></div>
+  </div>
+</div>
+
+</body>
+</html>
