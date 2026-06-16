@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CYQUENT CCWIS — Sandbox Demo Environment</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0d1117;
+      --surface:   #161b27;
+      --card:      #1c2336;
+      --border:    #2a3550;
+      --accent:    #4f8ef7;
+      --accent2:   #2ecc71;
+      --text:      #c8d3e8;
+      --muted:     #6a7fa8;
+      --danger:    #e05757;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 48px 24px 80px;
+    }
+
+    .logo-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 8px;
+    }
+    .logo-hex {
+      font-size: 38px;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .logo-text {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: #fff;
+    }
+    .logo-text span { color: var(--accent); }
+
+    .tagline {
+      font-size: 13px;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .badge-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 48px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .badge {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 20px;
+      border: 1px solid;
+    }
+    .badge.blue   { color: #4f8ef7; border-color: #1e3a6e; background: #0d1f3c; }
+    .badge.green  { color: #2ecc71; border-color: #1a4a2e; background: #0d2318; }
+    .badge.orange { color: #f0a032; border-color: #4a3010; background: #231808; }
+
+    h2.section-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+      width: 100%;
+      max-width: 860px;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+      gap: 24px;
+      width: 100%;
+      max-width: 860px;
+      margin-bottom: 48px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px 28px 24px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 0 28px rgba(79,142,247,0.12);
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), #8b5cf6);
+    }
+    .card.mobile::before {
+      background: linear-gradient(90deg, var(--accent2), #06b6d4);
+    }
+
+    .card-icon {
+      font-size: 32px;
+      margin-bottom: 12px;
+      display: block;
+    }
+    .card-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+    .card-sub {
+      font-size: 12px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 14px;
+    }
+    .card-desc {
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.65;
+      margin-bottom: 20px;
+    }
+    .card-features {
+      list-style: none;
+      margin-bottom: 24px;
+    }
+    .card-features li {
+      font-size: 12px;
+      color: var(--muted);
+      padding: 3px 0;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .card-features li::before {
+      content: '✓';
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 11px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 10px 22px;
+      border-radius: 7px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-primary:hover { background: #3a7be8; }
+    .btn-green {
+      background: var(--accent2);
+      color: #0d2318;
+    }
+    .btn-green:hover { background: #27b864; }
+    .btn-ghost {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { color: var(--text); border-color: var(--accent); }
+
+    .session-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+      width: 100%;
+      max-width: 860px;
+      margin-bottom: 48px;
+    }
+    .session-panel h3 {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 12px;
+    }
+    .session-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+    }
+    .session-stat {
+      background: var(--card);
+      border-radius: 8px;
+      padding: 12px 16px;
+      border: 1px solid var(--border);
+    }
+    .session-stat .label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+    .session-stat .value { font-size: 16px; font-weight: 700; color: #fff; margin-top: 4px; font-family: monospace; }
+    .session-stat .value.accent { color: var(--accent); }
+
+    .instructions {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px 28px;
+      width: 100%;
+      max-width: 860px;
+    }
+    .instructions h3 { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 16px; }
+    .step { display: flex; gap: 14px; margin-bottom: 14px; align-items: flex-start; }
+    .step-num {
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .step-text { font-size: 13px; color: var(--text); line-height: 1.6; padding-top: 2px; }
+    .step-text code {
+      background: #0d1117;
+      border: 1px solid var(--border);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+      color: var(--accent);
+      font-family: monospace;
+    }
+
+    footer {
+      margin-top: 48px;
+      text-align: center;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    footer a { color: var(--muted); text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <div class="logo-row">
+    <span class="logo-hex">⬡</span>
+    <span class="logo-text">CY<span>QUENT</span></span>
+  </div>
+  <p class="tagline">CCWIS Sandbox Demo Environment</p>
+
+  <div class="badge-row">
+    <span class="badge blue">CCWIS Compliant</span>
+    <span class="badge blue">45 CFR §1355.52</span>
+    <span class="badge green">AI-Powered</span>
+    <span class="badge orange">Sandbox — Not PHI</span>
+  </div>
+
+  <!-- ── SESSION PANEL ─────────────────────────────────────────────── -->
+  <h2 class="section-label">Your Demo Session</h2>
+  <div class="session-panel">
+    <h3>Session Status</h3>
+    <div class="session-grid">
+      <div class="session-stat">
+        <div class="label">Session ID</div>
+        <div class="value accent" id="sid-display">Loading…</div>
+      </div>
+      <div class="session-stat">
+        <div class="label">CRM Last Saved</div>
+        <div class="value" id="crm-saved">—</div>
+      </div>
+      <div class="session-stat">
+        <div class="label">Mobile Last Saved</div>
+        <div class="value" id="mob-saved">—</div>
+      </div>
+      <div class="session-stat">
+        <div class="label">Storage Used</div>
+        <div class="value" id="storage-used">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── DEMO CARDS ────────────────────────────────────────────────── -->
+  <h2 class="section-label">Available Demos</h2>
+  <div class="card-grid">
+
+    <div class="card">
+      <span class="card-icon">🖥</span>
+      <div class="card-title">CYQUENT CRM — Caseworker Desktop</div>
+      <div class="card-sub">Cat A &amp; B Case Management · Guardian/D365 Pattern</div>
+      <p class="card-desc">Full CRM shell with 9 demo families across Cat A (high-risk) and Cat B (monitoring) cases. Covers the complete case lifecycle with AI agent assistance.</p>
+      <ul class="card-features">
+        <li>Personal dashboard + task queue</li>
+        <li>Worker safety flags &amp; genogram SVG</li>
+        <li>MDT / family team meeting docs</li>
+        <li>Supervisor approval workflow</li>
+        <li>Significant events, drug testing, collateral contacts</li>
+        <li>Living safety plan form</li>
+        <li>Sibling visitation tracking</li>
+      </ul>
+      <a href="CCWIS_Agent_Demo.html" class="btn btn-primary">Launch CRM Demo →</a>
+    </div>
+
+    <div class="card mobile">
+      <span class="card-icon">📱</span>
+      <div class="card-title">CYQUENT Mobile — Field Investigation</div>
+      <div class="card-sub">8-Screen Phone Flow · Offline-Ready Prototype</div>
+      <p class="card-desc">Phone-frame prototype covering the full field investigation workflow from case briefing through submission, with a live CRM field mapping panel at each step.</p>
+      <ul class="card-features">
+        <li>Case briefing → SDM safety screen → findings</li>
+        <li>Voice-to-text note capture (simulated)</li>
+        <li>GPS + evidence collection</li>
+        <li>Signature capture</li>
+        <li>Field-to-CRM field map panel</li>
+        <li>Supervisor escalation screen</li>
+      </ul>
+      <a href="CCWIS_Mobile_Investigation.html" class="btn btn-green">Launch Mobile Demo →</a>
+    </div>
+
+  </div>
+
+  <!-- ── INSTRUCTIONS ──────────────────────────────────────────────── -->
+  <h2 class="section-label">How Save &amp; Restore Works</h2>
+  <div class="instructions">
+    <h3>No account needed — your work is saved in this browser</h3>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-text">Open either demo above. A <strong>CYQUENT save toolbar</strong> appears in the bottom-right corner of the screen.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-text">Work through the demo — fill forms, navigate cases, log contacts. Your work <strong>auto-saves every 30 seconds</strong> and on every form change.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-text">Close the browser tab. Reopen the same demo URL. Click <code>↩ Restore</code> — or it auto-restores your last save.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-text">To hand off your session, click <code>⬇ Export</code> to download a JSON file. Send it to a colleague, who clicks <code>⬆ Import</code> to load your exact state.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-text">Your <strong>Session ID</strong> (shown above) is unique to this browser. If you need support, share it. Click the ID chip in the toolbar to copy it instantly.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">6</div>
+      <div class="step-text"><strong>Important:</strong> Data is stored <em>only in this browser</em> (localStorage). Clearing browser data or switching devices starts fresh — use Export/Import to move sessions.</div>
+    </div>
+  </div>
+
+  <footer>
+    CYQUENT CCWIS — Sandbox Demo Environment &nbsp;|&nbsp;
+    Not for production use &nbsp;|&nbsp;
+    No real PHI or PII &nbsp;|&nbsp;
+    <a href="https://github.com/YOUR-ORG/cyquent-demo" target="_blank">GitHub</a>
+  </footer>
+
+  <script>
+    // Display session stats from localStorage
+    (function() {
+      // Session ID
+      let sid = localStorage.getItem('cyquent_session_id');
+      if (!sid) {
+        sid = 'CYQ-' + Math.random().toString(36).substr(2,6).toUpperCase();
+        localStorage.setItem('cyquent_session_id', sid);
+      }
+      document.getElementById('sid-display').textContent = sid;
+
+      // Parse each demo's saved state
+      function getLastSaved(key) {
+        try {
+          const raw = localStorage.getItem(key);
+          if (!raw) return '—';
+          const s = JSON.parse(raw);
+          if (!s.savedAt) return '—';
+          return new Date(s.savedAt).toLocaleString();
+        } catch(e) { return '—'; }
+      }
+
+      document.getElementById('crm-saved').textContent = getLastSaved('cyquent_demo_state');
+      document.getElementById('mob-saved').textContent = getLastSaved('cyquent_demo_state_mobile');
+
+      // Rough storage size
+      let total = 0;
+      for (let k in localStorage) {
+        if (localStorage.hasOwnProperty(k) && k.startsWith('cyquent')) {
+          total += (localStorage[k].length * 2); // UTF-16 bytes
+        }
+      }
+      const kb = (total / 1024).toFixed(1);
+      document.getElementById('storage-used').textContent = kb + ' KB / ~5 MB';
+    })();
+  </script>
+
+</body>
+</html>
